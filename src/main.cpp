@@ -14,6 +14,10 @@ int main() {
 	Game newgame;
 
 	newgame.visualise();
+	
+	newgame.playmove(21, 31, 1);
+
+	newgame.visualise();
 
 
 	return 0;

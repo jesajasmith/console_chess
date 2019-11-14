@@ -23,8 +23,10 @@ public:
 	string board_pos_to_figure(short board);
 
 	//Leo is the best
+	int boardtheme = 2;
 	char inttochar(int inttemp);
 	void visualise();
+	int playmove(int movefrom, int moveto,int valid);
 };
 
 

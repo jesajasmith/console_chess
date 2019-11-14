@@ -1,5 +1,5 @@
 #include "Game.h"
-
+using namespace std;
 
 
 Game::Game()
@@ -127,14 +127,42 @@ char Game::inttochar(int inttemp)
 
 void Game::visualise()
 {
-	//Colors
+	//Colors 
+	int settemp = boardtheme;
+
+	//Theme one standart
 	int colorbonw = 112;
 	int colorbonb = 96;
 	int colorwonw = 127;
 	int colorwonb = 111;
 	int colorleg = 15;
 
-	std::cout << "Hello World!\n";
+	//Theme 1 Grey and Beige
+	if (settemp == 1) {
+		colorbonw = 112;
+		colorbonb = 96;
+		colorwonw = 127;
+		colorwonb = 111;
+		colorleg = 15;
+	}
+	//Theme 2 Light and Dark Grey
+	if (settemp == 2) {
+		colorbonw = 112;
+		colorbonb = 128;
+		colorwonw = 127;
+		colorwonb = 143;
+		colorleg = 15;
+	}
+	//Theme Colorful
+	if (settemp == 3) {
+		colorbonw = 73;
+		colorbonb = 83;
+		colorwonw = 74;
+		colorwonb = 90;//
+		colorleg = 15;
+	}
+
+	std::cout << "Chess Board!\n";
 
 	HANDLE hConsole;
 	int k;
@@ -142,8 +170,11 @@ void Game::visualise()
 	hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleTextAttribute(hConsole, colorleg);
 
-	//ROW 1
 	cout << endl;
+
+	cout << "   A  B  C  D  E  F  G  H  "<< endl;
+	//ROW 1
+	
 	SetConsoleTextAttribute(hConsole, colorleg);
 	cout << "1 ";
 	for (size_t i1 = 11; i1 <= 18; i1++)
@@ -334,12 +365,60 @@ void Game::visualise()
 	}
 	SetConsoleTextAttribute(hConsole, colorleg);
 	cout << " 8" << endl;
+	cout << "   A  B  C  D  E  F  G  H  " << endl;
 
 
 
 	cout << endl;
 	//cin.get(); // wait
 	
+}
+
+int Game::playmove(int movefrom, int moveto, int valid)
+{
+
+
+	//Overwrite array
+
+	//Confirm kill
+	int killconftemp = 0;
+	int killtemp = 0;
+	char killchartemp = ' ';
+	string killtypetemp = "";
+
+		if (board_position[moveto] != 0) 
+		{
+			killtemp = board_position[moveto];
+			killchartemp = inttochar(killtemp);
+			killconftemp = 1;
+		}
+
+		if (killtemp <= 6)
+		{
+			killtypetemp = "white";
+		}
+		else
+		{
+			killtypetemp = "black";
+		}
+
+
+	board_position[movefrom] = 0;
+	board_position[moveto] = board_position[movefrom];
+
+
+	HANDLE hConsole;
+	hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleTextAttribute(hConsole, 15);
+	cout << endl;
+	cout << movefrom <<" moved to " << moveto;
+	if (killconftemp)
+	{
+		cout << killtypetemp << killchartemp << "was killed";
+	}
+	cout << endl;
+
+	return 0;
 }
 
 
