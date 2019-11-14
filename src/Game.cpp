@@ -438,18 +438,59 @@ list <int> Game::list_of_valid_moves(int position_now)
 
 		if(board_position[position_now] == w_pawn)
 		{
-			if ((is_position_in_board(board_position[position_now + 10] || (board_position[position_now + 10] == empty)) return_list.push_back(position_now + 10);
-			
+			if((is_position_in_board(board_position[position_now + 10])) && (board_position[position_now + 10] == empty)) return_list.push_back(position_now + 10);
+			if((is_position_in_board(board_position[position_now + 9])) && is_black((board_position[position_now + 9]))) return_list.push_back(position_now + 9);
+			if((is_position_in_board(board_position[position_now + 11])) && is_black((board_position[position_now + 11]))) return_list.push_back(position_now + 11);	
 		}
 
 
 
+		/*__________________________________________________________________________________________________________________________________
+													case black pawn
+		__________________________________________________________________________________________________________________________________
+		*/
+
+		if (board_position[position_now] == w_pawn)
+		{
+			if ((is_position_in_board(board_position[position_now - 10])) && (board_position[position_now - 10] == empty)) return_list.push_back(position_now - 10);
+			if ((is_position_in_board(board_position[position_now - 9])) && is_black((board_position[position_now - 9]))) return_list.push_back(position_now - 9);
+			if ((is_position_in_board(board_position[position_now - 11])) && is_black((board_position[position_now - 11]))) return_list.push_back(position_now - 11);
+		}
+
+
+		/*
+		/*__________________________________________________________________________________________________________________________________
+													case king 
+		__________________________________________________________________________________________________________________________________
+		*/
+
+		if (board_position[position_now] == w_king)
+		{
+			int king_addition[8] = { 9,10,11,1,-11,-10,-9,-1 };
+
+			for (int i = 0; i <= 8; i++)
+
+			{
+				if (is_position_in_board(board_position[position_now + king_addition[i]]) &&
+					((board_position[position_now + king_addition[i]] == empty) || is_black(board_position[position_now + king_addition[i]])))
+				{
+					//Prüfe ob Feld Verteidigt
+					for (int i = 11; i <= 88; i++)
+					{
+						if (board_position[]);
+					}
+				}
 
 
 
+				if((is_position_in_board(board_position[position_now + king_addition[i]])) && (board_position[position_now + king_addition[i]] == empty))
 
 
+			}
+		}
 
+
+	*/
 
 
 
