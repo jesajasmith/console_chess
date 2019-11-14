@@ -127,6 +127,7 @@ char Game::inttochar(int inttemp)
 
 void Game::visualise()
 {
+	using namespace std;
 	//Colors 
 	int settemp = boardtheme;
 
@@ -372,6 +373,487 @@ void Game::visualise()
 	cout << endl;
 	//cin.get(); // wait
 	
+}
+
+void Game::visualisemoves(list<int> listvalidmoves)
+{
+
+	//Colors 
+	int settemp = boardtheme;
+
+	//Theme one standart
+	int colorbonw = 112;
+	int colorbonb = 96;
+	int colorwonw = 127;
+	int colorwonb = 111;
+	int colorleg = 15;
+
+	//Theme 1 Grey and Beige
+	if (settemp == 1) {
+		colorbonw = 112;
+		colorbonb = 96;
+		colorwonw = 127;
+		colorwonb = 111;
+		colorleg = 15;
+	}
+	//Theme 2 Light and Dark Grey
+	if (settemp == 2) {
+		colorbonw = 112;
+		colorbonb = 128;
+		colorwonw = 127;
+		colorwonb = 143;
+		colorleg = 15;
+	}
+	//Theme Colorful
+	if (settemp == 3) {
+		colorbonw = 73;
+		colorbonb = 83;
+		colorwonw = 74;
+		colorwonb = 90;//
+		colorleg = 15;
+	}
+
+	std::cout << "Chess Board!\n";
+
+	HANDLE hConsole;
+	int k;
+
+	hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleTextAttribute(hConsole, colorleg);
+
+	cout << endl;
+
+	cout << "   A  B  C  D  E  F  G  H  " << endl;
+	//ROW 1
+	SetConsoleTextAttribute(hConsole, colorleg);
+	cout << "1 ";
+	for (size_t i1 = 11; i1 <= 18; i1++)
+	{
+		int colortemp;
+		if ((i1 % 2))
+		{
+			if (board_position[i1] <= 6) { colortemp = colorwonw; }
+			else { colortemp = colorbonw; }
+		}
+		else
+		{
+			if (board_position[i1] <= 6) { colortemp = colorwonb; }
+			else { colortemp = colorbonb; }
+		}
+
+
+		SetConsoleTextAttribute(hConsole, colortemp);
+		if ((std::find(listvalidmoves.begin(), listvalidmoves.end(), i1) != listvalidmoves.end()))
+		{
+			int colormarker = 64;
+			if (board_position[i1] <= 6)
+			{
+				colormarker = 79;
+				if (quersum(i1) % 2) {
+					colormarker = 79;
+				}
+				else
+				{
+					colormarker = 207;
+				}
+			}
+			else
+			{
+				colormarker = 64;
+				if (quersum(i1) % 2) {
+					colormarker = 64;
+				}
+				else
+				{
+					colormarker = 192;
+				}
+			}
+			SetConsoleTextAttribute(hConsole, colormarker);
+		}
+		
+		cout << " " << inttochar(board_position[i1]) << " ";
+	}
+	SetConsoleTextAttribute(hConsole, colorleg);
+	cout << " 1" << endl;
+
+	//ROW 2
+	SetConsoleTextAttribute(hConsole, colorleg);
+	cout << "2 ";
+	for (size_t i2 = 21; i2 <= 28; i2++)
+	{
+		int colortemp;
+		if (((i2 + 1) % 2))
+		{
+			if (board_position[i2] <= 6) { colortemp = colorwonw; }
+			else { colortemp = colorbonw; }
+		}
+		else
+		{
+			if (board_position[i2] <= 6) { colortemp = colorwonb; }
+			else { colortemp = colorbonb; }
+		}
+
+
+		SetConsoleTextAttribute(hConsole, colortemp);
+
+		if ((std::find(listvalidmoves.begin(), listvalidmoves.end(), i2) != listvalidmoves.end()))
+		{
+			int colormarker = 64;
+			if (board_position[i2] <= 6)
+			{
+				colormarker = 79;
+				if (quersum(i2) % 2) {
+					colormarker = 79;
+				}
+				else
+				{
+					colormarker = 207;
+				}
+			}
+			else
+			{
+				colormarker = 64;
+				if (quersum(i2) % 2) {
+					colormarker = 64;
+				}
+				else
+				{
+					colormarker = 192;
+				}
+			}
+			SetConsoleTextAttribute(hConsole, colormarker);
+		}
+		cout << " " << inttochar(board_position[i2]) << " ";
+	}
+	SetConsoleTextAttribute(hConsole, colorleg);
+	cout << " 2" << endl;
+
+	//ROW 3
+	SetConsoleTextAttribute(hConsole, colorleg);
+	cout << "3 ";
+	for (size_t i3 = 31; i3 <= 38; i3++)
+	{
+		int colortemp;
+		if (((i3) % 2))
+		{
+			if (board_position[i3] <= 6) { colortemp = colorwonw; }
+			else { colortemp = colorbonw; }
+		}
+		else
+		{
+			if (board_position[i3] <= 6) { colortemp = colorwonb; }
+			else { colortemp = colorbonb; }
+		}
+
+
+		SetConsoleTextAttribute(hConsole, colortemp);
+		if ((std::find(listvalidmoves.begin(), listvalidmoves.end(), i3) != listvalidmoves.end()))
+		{
+			int colormarker = 64;
+			if (board_position[i3] <= 6)
+			{
+				colormarker = 79;
+				if (quersum(i3) % 2) {
+					colormarker = 79;
+				}
+				else
+				{
+					colormarker = 207;
+				}
+			}
+			else
+			{
+				colormarker = 64;
+				if (quersum(i3) % 2) {
+					colormarker = 64;
+				}
+				else
+				{
+					colormarker = 192;
+				}
+			}
+			SetConsoleTextAttribute(hConsole, colormarker);
+		}
+		cout << " " << inttochar(board_position[i3]) << " ";
+	}
+	SetConsoleTextAttribute(hConsole, colorleg);
+	cout << " 3" << endl;
+
+	//ROW 4
+	SetConsoleTextAttribute(hConsole, colorleg);
+	cout << "4 ";
+	for (size_t i4 = 41; i4 <= 48; i4++)
+	{
+		int colortemp;
+		if (((i4 + 1) % 2))
+		{
+			if (board_position[i4] <= 6) { colortemp = colorwonw; }
+			else { colortemp = colorbonw; }
+		}
+		else
+		{
+			if (board_position[i4] <= 6) { colortemp = colorwonb; }
+			else { colortemp = colorbonb; }
+		}
+
+
+		SetConsoleTextAttribute(hConsole, colortemp);
+		if ((std::find(listvalidmoves.begin(), listvalidmoves.end(), i4) != listvalidmoves.end()))
+		{
+			int colormarker = 64;
+			if (board_position[i4] <= 6)
+			{
+				colormarker = 79;
+				if (quersum(i4) % 2) {
+					colormarker = 79;
+				}
+				else
+				{
+					colormarker = 207;
+				}
+			}
+			else
+			{
+				colormarker = 64;
+				if (quersum(i4) % 2) {
+					colormarker = 64;
+				}
+				else
+				{
+					colormarker = 192;
+				}
+			}
+			SetConsoleTextAttribute(hConsole, colormarker);
+		}
+		cout << " " << inttochar(board_position[i4]) << " ";
+	}
+	SetConsoleTextAttribute(hConsole, colorleg);
+	cout << " 4" << endl;
+
+	//ROW 5
+	SetConsoleTextAttribute(hConsole, colorleg);
+	cout << "5 ";
+	for (size_t i5 = 51; i5 <= 58; i5++)
+	{
+		int colortemp;
+		if (((i5) % 2))
+		{
+			if (board_position[i5] <= 6) { colortemp = colorwonw; }
+			else { colortemp = colorbonw; }
+		}
+		else
+		{
+			if (board_position[i5] <= 6) { colortemp = colorwonb; }
+			else { colortemp = colorbonb; }
+		}
+
+
+		SetConsoleTextAttribute(hConsole, colortemp);
+		if ((std::find(listvalidmoves.begin(), listvalidmoves.end(), i5) != listvalidmoves.end()))
+		{
+			int colormarker = 64;
+			if (board_position[i5] <= 6)
+			{
+				colormarker = 79;
+				if (quersum(i5) % 2) {
+					colormarker = 79;
+				}
+				else
+				{
+					colormarker = 207;
+				}
+			}
+			else
+			{
+				colormarker = 64;
+				if (quersum(i5) % 2) {
+					colormarker = 64;
+				}
+				else
+				{
+					colormarker = 192;
+				}
+			}
+			SetConsoleTextAttribute(hConsole, colormarker);
+		}
+		cout << " " << inttochar(board_position[i5]) << " ";
+	}
+	SetConsoleTextAttribute(hConsole, colorleg);
+	cout << " 5" << endl;
+
+	//ROW 6
+	SetConsoleTextAttribute(hConsole, colorleg);
+	cout << "6 ";
+	for (size_t i6 = 61; i6 <= 68; i6++)
+	{
+		int colortemp;
+		if (((i6 + 1) % 2))
+		{
+			if (board_position[i6] <= 6) { colortemp = colorwonw; }
+			else { colortemp = colorbonw; }
+		}
+		else
+		{
+			if (board_position[i6] <= 6) { colortemp = colorwonb; }
+			else { colortemp = colorbonb; }
+		}
+
+
+		SetConsoleTextAttribute(hConsole, colortemp);
+		if ((std::find(listvalidmoves.begin(), listvalidmoves.end(), i6) != listvalidmoves.end()))
+		{
+			int colormarker = 64;
+			if (board_position[i6] <= 6)
+			{
+				colormarker = 79;
+				if (quersum(i6) % 2) {
+					colormarker = 79;
+				}
+				else
+				{
+					colormarker = 207;
+				}
+			}
+			else
+			{
+				colormarker = 64;
+				if (quersum(i6) % 2) {
+					colormarker = 64;
+				}
+				else
+				{
+					colormarker = 192;
+				}
+			}
+			SetConsoleTextAttribute(hConsole, colormarker);
+		}
+		cout << " " << inttochar(board_position[i6]) << " ";
+	}
+	SetConsoleTextAttribute(hConsole, colorleg);
+	cout << " 6" << endl;
+
+	//ROW 7
+	SetConsoleTextAttribute(hConsole, colorleg);
+	cout << "7 ";
+	for (size_t i7 = 71; i7 <= 78; i7++)
+	{
+		int colortemp;
+		if (((i7) % 2))
+		{
+			if (board_position[i7] <= 6) { colortemp = colorwonw; }
+			else { colortemp = colorbonw; }
+		}
+		else
+		{
+			if (board_position[i7] <= 6) { colortemp = colorwonb; }
+			else { colortemp = colorbonb; }
+		}
+
+
+		SetConsoleTextAttribute(hConsole, colortemp);
+		if ((std::find(listvalidmoves.begin(), listvalidmoves.end(), i7) != listvalidmoves.end()))
+		{
+			int colormarker = 64;
+			if (board_position[i7] <= 6)
+			{
+				colormarker = 79;
+				if (quersum(i7) % 2) {
+					colormarker = 79;
+				}
+				else
+				{
+					colormarker = 207;
+				}
+			}
+			else
+			{
+				colormarker = 64;
+				if (quersum(i7) % 2) {
+					colormarker = 64;
+				}
+				else
+				{
+					colormarker = 192;
+				}
+			}
+
+			SetConsoleTextAttribute(hConsole, colormarker);
+		}
+			cout << " " << inttochar(board_position[i7]) << " ";
+		}
+	
+	SetConsoleTextAttribute(hConsole, colorleg);
+	cout << " 7" << endl;
+
+	//ROW 8
+	SetConsoleTextAttribute(hConsole, colorleg);
+	cout << "8 ";
+	for (size_t i8 = 81; i8 <= 88; i8++)
+	{
+		int colortemp;
+		if (((i8 + 1) % 2))
+		{
+			if (board_position[i8] <= 6) { colortemp = colorwonw; }
+			else { colortemp = colorbonw; }
+		}
+		else
+		{
+			if (board_position[i8] <= 6) { colortemp = colorwonb; }
+			else { colortemp = colorbonb; }
+		}
+
+
+		SetConsoleTextAttribute(hConsole, colortemp);
+		if ((std::find(listvalidmoves.begin(), listvalidmoves.end(), i8) != listvalidmoves.end()))
+		{
+			int colormarker = 64;
+			if (board_position[i8] <= 6)
+			{
+				colormarker = 79;
+				if (quersum(i8) % 2) {
+					colormarker = 79;
+				}
+				else
+				{
+					colormarker = 207;
+				}
+			}
+			else
+			{
+				colormarker = 64;
+				if (quersum(i8) % 2) {
+					colormarker = 64;
+				}
+				else
+				{
+					colormarker = 192;
+				}
+			}
+			SetConsoleTextAttribute(hConsole, colormarker);
+		}
+			cout << " " << inttochar(board_position[i8]) << " ";
+		}
+		SetConsoleTextAttribute(hConsole, colorleg);
+
+		cout << " 8" << endl;
+		cout << "   A  B  C  D  E  F  G  H  " << endl;
+
+
+
+		cout << endl;
+		//cin.get(); // wait
+	}
+
+
+
+int Game::quersum(int intemp)
+{
+	int outtemp = 0;
+	while (intemp > 0) {
+		outtemp += intemp % 10;
+		intemp /= 10;
+	}
+	return outtemp;
 }
 
 int Game::playmove(int movefrom, int moveto, int valid)
