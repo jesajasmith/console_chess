@@ -2,6 +2,7 @@
 #include "Game.h"
 #include <iostream>
 #include <string>
+#include <list> 
 
 using namespace std;
 class Game
@@ -17,6 +18,10 @@ public:
 	void output_board();
 	//bool save_game();
 	void initialise_board();
+	list <int> list_of_valid_moves(int position_now, int move_to);
+	bool is_position_in_board(int position);
+	void error_output(int error_num);
+
 	string board_pos_to_figure(short board);
 };
 

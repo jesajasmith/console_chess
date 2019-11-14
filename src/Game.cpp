@@ -109,3 +109,36 @@ void Game::output_board()
 		cout << "  " << (char)i << " ";
 	}
 }
+void Game::error_output(int error_num)
+{
+	string error_msg;
+
+	switch(error_num)
+	{
+	case 1: error_msg = "Position of piece not in Board";
+		break;
+	}
+
+	cout << "An error has acured ->  " << error_msg << endl;
+	int temp_input;
+	cin >> temp_input;
+
+	return;
+}
+
+bool Game::is_position_in_board(int position)
+{
+	//check if first and second integer are in [1,..,8] 
+	if ((position <= 88) && (position >= 11) && (((position % 10) >= 1) && ((position % 10) <= 8))) return true;
+	error_output(1);
+	return false;
+}
+
+list <int> Game::list_of_valid_moves(int position_now, int move_to)
+{
+	list<int> return_list;
+	//Return empty list if position isn't in board
+	if (!(is_position_in_board(position_now) && is_position_in_board(move_to))) return return_list;
+	return return_list;
+
+}
