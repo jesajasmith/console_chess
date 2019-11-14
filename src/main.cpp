@@ -10,21 +10,15 @@ using namespace std;
 int hi;
 
 int main() {
-	/*{
-		for (int i = 0; i <= NUM_GAMES; i++)
-		{
-			while (true) //game.gamefinished == true
-			{
-
-			}
-		}
-
-
-		return 0;
-	}
-	*/
+	
 	Game newgame;
-	newgame.output_board();
-	cin >> hi;
+
+	newgame.visualise();
+	
+	newgame.playmove(21, 31, 1);
+
+	newgame.visualise();
+
+
 	return 0;
 }
