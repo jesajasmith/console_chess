@@ -3,11 +3,13 @@
 #include "Game.h"
 #include <iostream>
 #include <string>
+
 #include <windows.h>  
 #include <list> 
 #include <algorithm>
 
 using namespace std;    // std::cout, std::cin
+
 
 using namespace std;
 class Game
@@ -23,6 +25,12 @@ public:
 	void output_board();
 	//bool save_game();
 	void initialise_board();
+	list <int> list_of_valid_moves(int position_now);
+	bool is_position_in_board(int position);
+	bool is_black(int position);
+	bool is_white(int position);
+	void error_output(int error_num);
+
 	string board_pos_to_figure(short board);
 
 	//Leo is the best
