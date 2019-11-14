@@ -3,8 +3,11 @@
 #include "Game.h"
 #include <iostream>
 #include <string>
+
+#include <windows.h>  
 #include <list> 
-#include <windows.h>   // WinApi header
+#include <algorithm>
+
 using namespace std;    // std::cout, std::cin
 
 
@@ -34,6 +37,8 @@ public:
 	int boardtheme = 2;
 	char inttochar(int inttemp);
 	void visualise();
+	void visualisemoves(list<int> return_list);
+	int quersum(int intemp);
 	int playmove(int movefrom, int moveto,int valid);
 };
 
