@@ -15,7 +15,7 @@ int main() {
 
 	Game newgame;
 
-	list<int> listvalidmoves;
+	/*list<int> listvalidmoves;
 	listvalidmoves.push_front(11);
 	listvalidmoves.push_front(88);
 	listvalidmoves.push_front(12);
@@ -28,6 +28,9 @@ int main() {
 
 	int numtest = newgame.quersum(13);
 	cout << numtest;
+	*/
+	newgame.visualisemoves(newgame.list_of_valid_moves(12));
+	cin >> hi;
 
 	return 0;
 }
