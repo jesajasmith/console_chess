@@ -27,6 +27,8 @@ void Game::initialise_board()
 	board_position[16] = w_bishop;
 	board_position[17] = w_knight;
 	board_position[18] = w_rook;
+	
+	
 
 	for (int i = 21; i <= 28; i++)
 	{
@@ -957,7 +959,7 @@ void Game::error_output(int error_num)
 bool Game::is_position_in_board(int position)
 {
 	//check if first and second integer are in [1,..,8] 
-	if ((position <= 88) && (position >= 11) && (((position % 10) >= 1) && ((position % 10) <= 8))) return true;
+	if (((position <= 88) && (position >= 11)) && (((position % 10) >= 1) && ((position % 10) <= 8))) return true;
 	return false;
 }
 
@@ -965,7 +967,7 @@ bool Game::is_black(int position)
 {
 	if (position >= 7 && position <= 12) return true;
 	if (position >= 1 && position <= 6) return false;
-	else error_output(1); 
+	//else error_output(1); 
 	return false;
 }
 
@@ -973,7 +975,7 @@ bool Game::is_white(int position)
 {
 	if (position >= 7 && position <= 12) return false;
 	if (position >= 1 && position <= 6) return true;
-	else error_output(1);
+	//else error_output(1);
 	return false;
 }
 
@@ -991,8 +993,8 @@ list <int> Game::list_of_valid_moves(int position_now)
 															case bis bishop & part Queen
 	  __________________________________________________________________________________________________________________________________
 	*/
-	if (   board_position[position_now] == w_bishop || board_position[position_now] == b_bishop
-		|| board_position[position_now] == b_queen  || board_position[position_now] == w_queen)
+	if (board_position[position_now] == w_bishop || board_position[position_now] == b_bishop
+		|| board_position[position_now] == b_queen || board_position[position_now] == w_queen)
 	{
 		int next_position;
 
@@ -1000,20 +1002,20 @@ list <int> Game::list_of_valid_moves(int position_now)
 		next_position = position_now + 11;
 		while (is_position_in_board(next_position) == true)
 		{
-			if (board_position[next_position] == empty) return_list.push_back(position_now);
+			if (board_position[next_position] == empty) return_list.push_back(next_position);
 			else
 			{
 				//What to do if a piece is in your way
-				if ((board_position[position_now] == w_bishop || board_position[position_now] == w_queen ) && is_white(board_position[position_now])) break;
-				if ((board_position[position_now] == w_bishop || board_position[position_now] == w_queen ) && is_black(board_position[position_now]))
+				if ((board_position[position_now] == w_bishop || board_position[position_now] == w_queen) && is_white(board_position[next_position])) break;
+				if ((board_position[position_now] == w_bishop || board_position[position_now] == w_queen) && is_black(board_position[next_position]))
 				{
-					return_list.push_back(position_now);
+					return_list.push_back(next_position);
 					break;
 				}
-				if ((board_position[position_now] == b_bishop || board_position[position_now] == b_queen ) && is_black(board_position[position_now])) break;
-				if ((board_position[position_now] == b_bishop || board_position[position_now] == b_queen)  && is_black(board_position[position_now]))
+				if ((board_position[position_now] == b_bishop || board_position[position_now] == b_queen) && is_black(board_position[next_position])) break;
+				if ((board_position[position_now] == b_bishop || board_position[position_now] == b_queen) && is_black(board_position[next_position]))
 				{
-					return_list.push_back(position_now);
+					return_list.push_back(next_position);
 					break;
 				}
 
@@ -1027,25 +1029,25 @@ list <int> Game::list_of_valid_moves(int position_now)
 
 		while (is_position_in_board(next_position) == true)
 		{
-			if (board_position[next_position] == empty) return_list.push_back(position_now);
+			if (board_position[next_position] == empty) return_list.push_back(next_position);
 			else
 			{
 				//What to do if a piece is in your way
-				if ((board_position[position_now] == w_bishop || board_position[position_now] == w_queen) && is_white(board_position[position_now])) break;
-				if ((board_position[position_now] == w_bishop || board_position[position_now] == w_queen) && is_black(board_position[position_now]))
+				if ((board_position[position_now] == w_bishop || board_position[position_now] == w_queen) && is_white(board_position[next_position])) break;
+				if ((board_position[position_now] == w_bishop || board_position[position_now] == w_queen) && is_black(board_position[next_position]))
 				{
-					return_list.push_back(position_now);
+					return_list.push_back(next_position);
 					break;
 				}
-				if ((board_position[position_now] == b_bishop || board_position[position_now] == b_queen) && is_black(board_position[position_now])) break;
-				if ((board_position[position_now] == b_bishop || board_position[position_now] == b_queen) && is_black(board_position[position_now]))
+				if ((board_position[position_now] == b_bishop || board_position[position_now] == b_queen) && is_black(board_position[next_position])) break;
+				if ((board_position[position_now] == b_bishop || board_position[position_now] == b_queen) && is_black(board_position[next_position]))
 				{
-					return_list.push_back(position_now);
+					return_list.push_back(next_position);
 					break;
 				}
 
 			}
-			next_position = position_now + 9;
+			next_position = next_position + 9;
 		}
 
 
@@ -1054,25 +1056,25 @@ list <int> Game::list_of_valid_moves(int position_now)
 
 		while (is_position_in_board(next_position) == true)
 		{
-			if (board_position[next_position] == empty) return_list.push_back(position_now);
+			if (board_position[next_position] == empty) return_list.push_back(next_position);
 			else
 			{
 				//What to do if a piece is in your way
-				if ((board_position[position_now] == w_bishop || board_position[position_now] == w_queen) && is_white(board_position[position_now])) break;
-				if ((board_position[position_now] == w_bishop || board_position[position_now] == w_queen) && is_black(board_position[position_now]))
+				if ((board_position[position_now] == w_bishop || board_position[position_now] == w_queen) && is_white(board_position[next_position])) break;
+				if ((board_position[position_now] == w_bishop || board_position[position_now] == w_queen) && is_black(board_position[next_position]))
 				{
-					return_list.push_back(position_now);
+					return_list.push_back(next_position);
 					break;
 				}
-				if ((board_position[position_now] == b_bishop || board_position[position_now] == b_queen) && is_black(board_position[position_now])) break;
-				if ((board_position[position_now] == b_bishop || board_position[position_now] == b_queen) && is_black(board_position[position_now]))
+				if ((board_position[position_now] == b_bishop || board_position[position_now] == b_queen) && is_black(board_position[next_position])) break;
+				if ((board_position[position_now] == b_bishop || board_position[position_now] == b_queen) && is_black(board_position[next_position]))
 				{
-					return_list.push_back(position_now);
+					return_list.push_back(next_position);
 					break;
 				}
 
 			}
-			next_position = position_now - 9;
+			next_position = next_position - 9;
 		}
 
 
@@ -1082,25 +1084,25 @@ list <int> Game::list_of_valid_moves(int position_now)
 
 		while (is_position_in_board(next_position) == true)
 		{
-			if (board_position[next_position] == empty) return_list.push_back(position_now);
+			if (board_position[next_position] == empty) return_list.push_back(next_position);
 			else
 			{
 				//What to do if a piece is in your way
-				if ((board_position[position_now] == w_bishop || board_position[position_now] == w_queen) && is_white(board_position[position_now])) break;
-				if ((board_position[position_now] == w_bishop || board_position[position_now] == w_queen) && is_black(board_position[position_now]))
+				if ((board_position[position_now] == w_bishop || board_position[position_now] == w_queen) && is_white(board_position[next_position])) break;
+				if ((board_position[position_now] == w_bishop || board_position[position_now] == w_queen) && is_black(board_position[next_position]))
 				{
-					return_list.push_back(position_now);
+					return_list.push_back(next_position);
 					break;
 				}
-				if ((board_position[position_now] == b_bishop || board_position[position_now] == b_queen) && is_black(board_position[position_now])) break;
-				if ((board_position[position_now] == b_bishop || board_position[position_now] == b_queen) && is_black(board_position[position_now]))
+				if ((board_position[position_now] == b_bishop || board_position[position_now] == b_queen) && is_black(board_position[next_position])) break;
+				if ((board_position[position_now] == b_bishop || board_position[position_now] == b_queen) && is_black(board_position[next_position]))
 				{
-					return_list.push_back(position_now);
+					return_list.push_back(next_position);
 					break;
 				}
 
 			}
-			next_position = position_now - 11;
+			next_position = next_position - 11;
 		}
 
 	}
@@ -1120,75 +1122,75 @@ list <int> Game::list_of_valid_moves(int position_now)
 		next_position = position_now + 10;
 		while (is_position_in_board(next_position) == true)
 		{
-			if (board_position[next_position] == empty) return_list.push_back(position_now);
+			if (board_position[next_position] == empty) return_list.push_back(next_position);
 			else
 			{
 				//What to do if a piece is in your way
-				if ((board_position[position_now] == w_rook || board_position[position_now] == w_queen) && is_white(board_position[position_now])) break;
-				if ((board_position[position_now] == w_rook || board_position[position_now] == w_queen) && is_black(board_position[position_now]))
+				if ((board_position[position_now] == w_rook || board_position[position_now] == w_queen) && is_white(board_position[next_position])) break;
+				if ((board_position[position_now] == w_rook || board_position[position_now] == w_queen) && is_black(board_position[next_position]))
 				{
-					return_list.push_back(position_now);
+					return_list.push_back(next_position);
 					break;
 				}
-				if ((board_position[position_now] == b_rook || board_position[position_now] == b_queen) && is_black(board_position[position_now])) break;
-				if ((board_position[position_now] == b_rook || board_position[position_now] == b_queen) && is_black(board_position[position_now]))
+				if ((board_position[position_now] == b_rook || board_position[position_now] == b_queen) && is_black(board_position[next_position])) break;
+				if ((board_position[position_now] == b_rook || board_position[position_now] == b_queen) && is_white(board_position[next_position]))
 				{
-					return_list.push_back(position_now);
+					return_list.push_back(next_position);
 					break;
 				}
 
 			}
-			next_position = position_now + 10;
+			next_position = next_position + 10;
 		}
 
 		// lower line 
 		next_position = position_now - 10;
 		while (is_position_in_board(next_position) == true)
 		{
-			if (board_position[next_position] == empty) return_list.push_back(position_now);
+			if (board_position[next_position] == empty) return_list.push_back(next_position);
 			else
 			{
 				//What to do if a piece is in your way
-				if ((board_position[position_now] == w_rook || board_position[position_now] == w_queen) && is_white(board_position[position_now])) break;
-				if ((board_position[position_now] == w_rook || board_position[position_now] == w_queen) && is_black(board_position[position_now]))
+				if ((board_position[position_now] == w_rook || board_position[position_now] == w_queen) && is_white(board_position[next_position])) break;
+				if ((board_position[position_now] == w_rook || board_position[position_now] == w_queen) && is_black(board_position[next_position]))
 				{
-					return_list.push_back(position_now);
+					return_list.push_back(next_position);
 					break;
 				}
-				if ((board_position[position_now] == b_rook || board_position[position_now] == b_queen) && is_black(board_position[position_now])) break;
-				if ((board_position[position_now] == b_rook || board_position[position_now] == b_queen) && is_black(board_position[position_now]))
+				if ((board_position[position_now] == b_rook || board_position[position_now] == b_queen) && is_black(board_position[next_position])) break;
+				if ((board_position[position_now] == b_rook || board_position[position_now] == b_queen) && is_white(board_position[next_position]))
 				{
-					return_list.push_back(position_now);
+					return_list.push_back(next_position);
 					break;
 				}
 
 			}
-			next_position = position_now - 10;
+			next_position = next_position - 10;
 		}
 
 		// left line 
 		next_position = position_now - 1;
 		while (is_position_in_board(next_position) == true)
 		{
-			if (board_position[next_position] == empty) return_list.push_back(position_now);
+			if (board_position[next_position] == empty) return_list.push_back(next_position);
 			else
 			{
 				//What to do if a piece is in your way
-				if ((board_position[position_now] == w_rook || board_position[position_now] == w_queen) && is_white(board_position[position_now])) break;
-				if ((board_position[position_now] == w_rook || board_position[position_now] == w_queen) && is_black(board_position[position_now]))
+				if ((board_position[position_now] == w_rook || board_position[position_now] == w_queen) && is_white(board_position[next_position])) break;
+				if ((board_position[position_now] == w_rook || board_position[position_now] == w_queen) && is_black(board_position[next_position]))
 				{
-					return_list.push_back(position_now);
+					return_list.push_back(next_position);
 					break;
 				}
-				if ((board_position[position_now] == b_rook || board_position[position_now] == b_queen) && is_black(board_position[position_now])) break;
-				if ((board_position[position_now] == b_rook || board_position[position_now] == b_queen) && is_black(board_position[position_now]))
+				if ((board_position[position_now] == b_rook || board_position[position_now] == b_queen) && is_black(board_position[next_position])) break;
+				if ((board_position[position_now] == b_rook || board_position[position_now] == b_queen) && is_white(board_position[next_position]))
 				{
-					return_list.push_back(position_now);
+					return_list.push_back(next_position);
 					break;
 				}
 
 			}
-			next_position = position_now - 1;
+			next_position = next_position - 1;
 		}
 
 
@@ -1196,26 +1198,27 @@ list <int> Game::list_of_valid_moves(int position_now)
 		next_position = position_now + 1;
 		while (is_position_in_board(next_position) == true)
 		{
-			if (board_position[next_position] == empty) return_list.push_back(position_now);
+			if (board_position[next_position] == empty) return_list.push_back(next_position);
 			else
 			{
 				//What to do if a piece is in your way
-				if ((board_position[position_now] == w_rook || board_position[position_now] == w_queen) && is_white(board_position[position_now])) break;
-				if ((board_position[position_now] == w_rook || board_position[position_now] == w_queen) && is_black(board_position[position_now]))
+				if ((board_position[position_now] == w_rook || board_position[position_now] == w_queen) && is_white(board_position[next_position])) break;
+				if ((board_position[position_now] == w_rook || board_position[position_now] == w_queen) && is_black(board_position[next_position]))
 				{
-					return_list.push_back(position_now);
+					return_list.push_back(next_position);
 					break;
 				}
-				if ((board_position[position_now] == b_rook || board_position[position_now] == b_queen) && is_black(board_position[position_now])) break;
-				if ((board_position[position_now] == b_rook || board_position[position_now] == b_queen) && is_black(board_position[position_now]))
+				if ((board_position[position_now] == b_rook || board_position[position_now] == b_queen) && is_black(board_position[next_position])) break;
+				if ((board_position[position_now] == b_rook || board_position[position_now] == b_queen) && is_white(board_position[next_position]))
 				{
-					return_list.push_back(position_now);
+					return_list.push_back(next_position);
 					break;
 				}
 
 			}
-			next_position = position_now + 1;
+			next_position = next_position + 1;
 		}
+	}
 
 		/*__________________________________________________________________________________________________________________________________
 																case Knight
@@ -1231,26 +1234,26 @@ list <int> Game::list_of_valid_moves(int position_now)
 			{
 
 
-				if (is_position_in_board(next_position + knight_addition[i]) == true)
+				if (is_position_in_board(position_now + knight_addition[i]) == true)
 				{
 
-					if (board_position[next_position + knight_addition[i]] == empty)
+					if (board_position[position_now + knight_addition[i]] == empty)
 					{
-						return_list.push_back(next_position + knight_addition[i]);
+						return_list.push_back(position_now + knight_addition[i]);
 						continue;
 					}
 
-					else if ((board_position[position_now] == w_knight && is_white(board_position[next_position + knight_addition[i]]))
-						|| (board_position[position_now] == b_knight && is_black(board_position[next_position + knight_addition[i]])))
+					else if ((board_position[position_now] == w_knight && is_white(board_position[position_now + knight_addition[i]]))
+						|| (board_position[position_now] == b_knight && is_black(board_position[position_now + knight_addition[i]])))
 					{
 
 						continue;
 					}
-					else if ((board_position[position_now] == w_knight && is_black(board_position[next_position + knight_addition[i]]))
-						|| (board_position[position_now] == b_knight && is_white(board_position[next_position + knight_addition[i]])))
+					else if ((board_position[position_now] == w_knight && is_black(board_position[position_now + knight_addition[i]]))
+						|| (board_position[position_now] == b_knight && is_white(board_position[position_now + knight_addition[i]])))
 					{
 
-						return_list.push_back(next_position + knight_addition[i]);
+						return_list.push_back(position_now + knight_addition[i]);
 						continue;
 					}
 
@@ -1264,11 +1267,11 @@ list <int> Game::list_of_valid_moves(int position_now)
 		__________________________________________________________________________________________________________________________________
 		*/
 
-		if(board_position[position_now] == w_pawn)
+		if (board_position[position_now] == w_pawn)
 		{
-			if((is_position_in_board(board_position[position_now + 10])) && (board_position[position_now + 10] == empty)) return_list.push_back(position_now + 10);
-			if((is_position_in_board(board_position[position_now + 9])) && is_black((board_position[position_now + 9]))) return_list.push_back(position_now + 9);
-			if((is_position_in_board(board_position[position_now + 11])) && is_black((board_position[position_now + 11]))) return_list.push_back(position_now + 11);	
+			if ((is_position_in_board(position_now + 10)) && (board_position[position_now + 10] == empty)) return_list.push_back(position_now + 10);
+			if ((is_position_in_board(position_now + 9)) && is_black((board_position[position_now + 9]))) return_list.push_back(position_now + 9);
+			if ((is_position_in_board(position_now + 11)) && is_black((board_position[position_now + 11]))) return_list.push_back(position_now + 11);
 		}
 
 
@@ -1278,19 +1281,20 @@ list <int> Game::list_of_valid_moves(int position_now)
 		__________________________________________________________________________________________________________________________________
 		*/
 
-		if (board_position[position_now] == w_pawn)
+		if (board_position[position_now] == b_pawn)
 		{
-			if ((is_position_in_board(board_position[position_now - 10])) && (board_position[position_now - 10] == empty)) return_list.push_back(position_now - 10);
-			if ((is_position_in_board(board_position[position_now - 9])) && is_black((board_position[position_now - 9]))) return_list.push_back(position_now - 9);
-			if ((is_position_in_board(board_position[position_now - 11])) && is_black((board_position[position_now - 11]))) return_list.push_back(position_now - 11);
+			if ((is_position_in_board(position_now - 10)) && (board_position[position_now - 10] == empty)) return_list.push_back(position_now - 10);
+			if ((is_position_in_board(position_now - 9)) && is_black((board_position[position_now - 9]))) return_list.push_back(position_now - 9);
+			if ((is_position_in_board(position_now - 11)) && is_black((board_position[position_now - 11]))) return_list.push_back(position_now - 11);
 		}
 
 
-		/*
+
 		/*__________________________________________________________________________________________________________________________________
-													case king 
+													case king
 		__________________________________________________________________________________________________________________________________
 		*/
+		/*
 
 		if (board_position[position_now] == w_king)
 		{
@@ -1327,12 +1331,13 @@ list <int> Game::list_of_valid_moves(int position_now)
 
 
 
+		cout << return_list.size();
+		return return_list;
 
 	}
 
-	return return_list;
+	
 
 
-}
 
 
