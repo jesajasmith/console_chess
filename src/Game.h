@@ -1,9 +1,8 @@
 
 #pragma once
-#include "Game.h"
+// #include "Game.h"
 #include <iostream>
 #include <string>
-
 #include <windows.h>  
 #include <list> 
 #include <algorithm>
@@ -30,6 +29,7 @@ public:
 	bool is_black(int position);
 	bool is_white(int position);
 	void error_output(int error_num);
+
 
 	string board_pos_to_figure(short board);
 
