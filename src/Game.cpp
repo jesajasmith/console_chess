@@ -27,13 +27,13 @@ void Game::initialise_board()
 	board_position[16] = w_bishop;
 	board_position[17] = w_knight;
 	board_position[18] = w_rook;
-	
-	
 
 	for (int i = 21; i <= 28; i++)
 	{
 		board_position[i] = w_pawn;
 	}
+
+	
 
 	board_position[81] = b_rook;
 	board_position[82] = b_knight;
@@ -947,6 +947,10 @@ void Game::error_output(int error_num)
 	{
 	case 1: error_msg = "Position of piece not in Board";
 		break;
+	case 2: error_msg = "King missing on Board";
+		break;
+	case 3: error_msg = "Wrong piece selected";
+		break;
 	}
 
 	cout << "An error has acured ->  " << error_msg << endl;
@@ -954,6 +958,382 @@ void Game::error_output(int error_num)
 	cin >> temp_input;
 
 	return;
+}
+
+bool Game::is_king_check(int position)
+{
+	if (!is_position_in_board(position))
+	{
+		error_output(1);
+		return false;
+	}
+
+	if (board_position[position] == w_king)
+	{
+		//check for Knight
+		int knight_addition[8] = { 19, 21 ,12, -8, -19, -21, -12, 8 };
+
+		for (int i = 0; i < 8; i++)
+		{
+			if (!is_position_in_board(position + knight_addition[i])) continue;
+			if (board_position[position + knight_addition[i]] == b_knight) return true;
+		}
+
+		//check for pawn
+
+		if (is_position_in_board(position + 9) || board_position[position + 9] == b_pawn) return true;
+		if (is_position_in_board(position + 11) || board_position[position + 9] == b_pawn) return true;
+
+		//check for bishop & part queen
+
+		int next_position;
+		int bishop_addition[4] = { 9,11,-9,-11 };
+
+		// go through all diagonals
+
+		for (int i = 0; i <= 3; i++)
+		{
+
+			next_position = position + bishop_addition[i];
+
+			while (is_position_in_board(next_position))
+			{
+				if (board_position[next_position] == empty)
+				{
+					next_position = next_position + bishop_addition[i];
+					continue;
+				}
+
+				if (is_white(board_position[next_position])) break;
+				if (is_black(board_position[next_position]))
+				{
+					if (board_position[next_position] == b_bishop || board_position[next_position] == b_queen) return true;
+					else break;
+				}
+
+
+			}
+
+		}
+
+		//check for rook & queen
+
+		int rook_addition[4] = { -1, 10 , 1 , -10 };
+		next_position = position;
+
+		for (int i = 0; i <= 3; i++)
+		{
+
+			next_position = position + rook_addition[i];
+
+			while (is_position_in_board(next_position))
+			{
+				if (board_position[next_position] == empty)
+				{
+					next_position = next_position + rook_addition[i];
+					continue;
+				}
+
+				if (is_white(board_position[next_position])) break;
+
+				if (is_black(board_position[next_position]))
+				{
+					if (board_position[next_position] == b_rook || board_position[next_position] == b_queen) return true;
+					else break;
+				}
+
+			}
+
+		}
+		return false;
+	}
+
+
+	else if (board_position[position] == b_king)
+	{
+		//check for Knight
+		int knight_addition[8] = { 19, 21 ,12, -8, -19, -21, -12, 8 };
+
+		for (int i = 0; i < 8; i++)
+		{
+			if (!is_position_in_board(position + knight_addition[i])) continue;
+			if (board_position[position + knight_addition[i]] == w_knight) return true;
+		}
+
+		//check for pawn
+
+		if (is_position_in_board(position - 9) && board_position[position - 9] == w_pawn) return true;
+		if (is_position_in_board(position - 11) && board_position[position - 9] == w_pawn) return true;
+
+		//check for bishop & part queen
+
+		int next_position;
+		int bishop_addition[4] = { 9,11,-9,-11 };
+
+		// go through all diagonals
+
+		for (int i = 0; i <= 3; i++)
+		{
+
+			next_position = position + bishop_addition[i];
+
+			while (is_position_in_board(next_position))
+			{
+				if (board_position[next_position] == empty)
+				{
+					next_position = next_position + bishop_addition[i];
+					continue;
+				}
+
+				if (is_black(board_position[next_position])) break;
+				if (is_white(board_position[next_position]))
+				{
+					if (board_position[next_position] == w_bishop || board_position[next_position] == w_queen) return true;
+					else break;
+				}
+
+			}
+
+		}
+
+		//check for rook & queen
+
+		int rook_addition[4] = { -1, 10 , 1 , -10 };
+		next_position = position;
+
+		for (int i = 0; i <= 3; i++)
+		{
+
+			next_position = position + rook_addition[i];
+
+			while (is_position_in_board(next_position))
+			{
+				if (board_position[next_position] == empty)
+			
+				{
+					next_position = next_position + rook_addition[i];
+					continue;
+				}
+
+				if (is_black(board_position[next_position])) break;
+
+				if (is_white(board_position[next_position]))
+				{
+					if (board_position[next_position] == w_rook || board_position[next_position] == w_queen) return true;
+					else break;
+				}
+
+			}
+
+		}
+
+		return false;
+
+	}
+
+	
+
+	else error_output(3);
+	return false;
+}
+
+bool Game::is_king_check(int position, int * temp_board)
+{
+	if (!is_position_in_board(position))
+	{
+		error_output(1);
+		return false;
+	}
+
+	if (temp_board[position] == w_king)
+	{
+		//check for Knight
+		int knight_addition[8] = { 19, 21 ,12, -8, -19, -21, -12, 8 };
+
+		for (int i = 0; i < 8; i++)
+		{
+			if (!is_position_in_board(position + knight_addition[i])) continue;
+			if (temp_board[position + knight_addition[i]] == b_knight) return true;
+		}
+
+		//check for pawn
+
+		if (is_position_in_board(position + 9) && temp_board[position + 9] == b_pawn) return true;
+		if (is_position_in_board(position + 11) && temp_board[position + 9] == b_pawn) return true;
+
+		//check for bishop & part queen
+
+		int next_position;
+		int bishop_addition[4] = { 9,11,-9,-11 };
+
+		// go through all diagonals
+
+		for (int i = 0; i <= 3; i++)
+		{
+
+			next_position = position + bishop_addition[i];
+
+			while (is_position_in_board(next_position))
+			{
+				if (temp_board[next_position] == empty)
+				{
+					next_position = next_position + bishop_addition[i];
+					continue;
+				}
+
+				if (is_white(temp_board[next_position])) break;
+
+				if (is_black(temp_board[next_position]))
+				{
+					if (temp_board[next_position] == b_bishop || temp_board[next_position] == b_queen) return true;
+					else break;
+				}
+					
+
+
+			}
+
+		}
+
+		//check for rook & queen
+
+		int rook_addition[4] = { -1, 10 , 1 , -10 };
+		next_position = position;
+
+		for (int i = 0; i <= 3; i++)
+		{
+
+			next_position = position + rook_addition[i];
+
+			while (is_position_in_board(next_position))
+			{
+				if (temp_board[next_position] == empty)
+				{
+					next_position = next_position + rook_addition[i];
+					continue;
+				}
+
+				if (is_white(temp_board[next_position])) break;
+				if (is_black(temp_board[next_position]))
+				{
+					if (temp_board[next_position] == b_rook || temp_board[next_position] == b_queen) return true;
+					else break;
+				}
+
+			}
+
+		}
+		return false;
+	}
+
+
+	else if (temp_board[position] == b_king)
+	{
+		//check for Knight
+		int knight_addition[8] = { 19, 21 ,12, -8, -19, -21, -12, 8 };
+
+		for (int i = 0; i < 8; i++)
+		{
+			if (!is_position_in_board(position + knight_addition[i])) continue;
+			if (temp_board[position + knight_addition[i]] == w_knight) return true;
+		}
+
+		//check for pawn
+
+		if (is_position_in_board(position - 9) && temp_board[position - 9] == w_pawn) return true;
+		if (is_position_in_board(position - 11) && temp_board[position - 9] == w_pawn) return true;
+
+		//check for bishop & part queen
+
+		int next_position;
+		int bishop_addition[4] = { 9,11,-9,-11 };
+
+		// go through all diagonals
+
+		for (int i = 0; i <= 3; i++)
+		{
+
+			next_position = position + bishop_addition[i];
+
+			while (is_position_in_board(next_position))
+			{
+				if (temp_board[next_position] == empty)
+				{
+					next_position = next_position + bishop_addition[i];
+					continue;
+				}
+
+				if (is_black(temp_board[next_position])) break;
+				if (is_white(temp_board[next_position]))
+				{
+					if (temp_board[next_position] == w_bishop || temp_board[next_position] == w_queen) return true;
+					else break;
+				}
+				
+
+			}
+
+		}
+
+		//check for rook & queen
+
+		int rook_addition[4] = { -1, 10 , 1 , -10 };
+		next_position = position;
+
+		for (int i = 0; i <= 3; i++)
+		{
+
+			next_position = position + rook_addition[i];
+
+			while (is_position_in_board(next_position))
+			{
+				if (temp_board[next_position] == empty)
+
+				{
+					next_position = next_position + rook_addition[i];
+					continue;
+				}
+
+				if (is_black(temp_board[next_position])) break;
+				if (is_white(temp_board[next_position]))
+				{
+					if (temp_board[next_position] == w_rook || temp_board[next_position] == w_queen) return true;
+					else break;
+				}
+			}
+
+		}
+
+		return false;
+
+	}
+
+
+
+	else error_output(3);
+	return false;
+}
+
+int Game::find_king(int color_king)
+{
+	if (color_king == w_king)
+	{
+		for (int i = 11; i <= 88; i++)
+		{
+			if (board_position[i] == w_king) return i;
+		}
+	}
+
+	else if (color_king == b_king)
+	{
+		for (int i = 11; i <= 88; i++)
+		{
+			if (board_position[i] == b_king) return i;
+		}
+	}
+
+	else error_output(3);
+	return 11;
 }
 
 bool Game::is_position_in_board(int position)
@@ -988,6 +1368,372 @@ list <int> Game::list_of_valid_moves(int position_now)
 		error_output(1);
 		return return_list;
 	}
+	// Return empty list if board is empty
+	if (board_position[position_now] == empty) return return_list;
+
+	/*
+	//Check if King is in check
+	if (is_white(board_position[position_now]) && !(board_position[position_now] == w_king))
+	{
+		if (is_king_check(find_king(w_king))) return return_list;
+	}
+	if (is_black(board_position[position_now]) && !(board_position[position_now] == b_king))
+	{
+		if (is_king_check(find_king(b_king))) return return_list;
+	}
+	*/
+
+	/*__________________________________________________________________________________________________________________________________
+														is piece pinned
+	__________________________________________________________________________________________________________________________________
+	*/
+
+	int position_king = 0;  
+	int cursor = 0;
+	int addition = 0;
+
+												//##### Case white pieces ####
+
+	bool no_pieces_between_king_and_position_now = true;
+
+	if (is_white(board_position[position_now]) && !(board_position[position_now] == w_king))
+	{
+		position_king = find_king(w_king);
+
+	
+		//####### Case piece pinned by rook or queen ######
+
+		//Same colum
+		if (((position_now - position_king) % 10) == 0)
+		{
+			if (position_king < position_now) addition = 10;
+			if (position_king > position_now) addition = -10;
+		}
+		//Same row
+		if ((position_king - (position_king % 10)) == (position_now - (position_now % 10)))
+		{
+			if (position_king < position_now) addition = 1;
+			if (position_king > position_now) addition = -1;
+		}
+
+		if (addition != 0)
+		{
+			cursor = position_king + addition;
+
+			//check if there are no pieces between king and position_now
+
+			while (cursor != position_now)
+			{
+				bool temp = false;
+				if (board_position[cursor] == empty) temp = true;
+				no_pieces_between_king_and_position_now = no_pieces_between_king_and_position_now && temp;
+				cursor = cursor + addition;
+			}
+			if (no_pieces_between_king_and_position_now == true)
+			{
+
+				cursor = position_now + addition;
+
+				while (is_position_in_board(cursor))
+				{
+					if (board_position[cursor] == empty)
+					{
+						cursor = cursor + addition;
+						continue;
+					}
+					if (is_white(board_position[cursor])) break;
+					if (board_position[cursor] == b_queen || board_position[cursor] == b_rook)
+					{
+						//Is my pined piece a rook or queen so it can defet the oposing rook or queen
+						if (board_position[position_now] == w_queen || board_position[position_now] == w_rook)
+						{
+							return_list.push_back(cursor);
+							int i = position_king + addition;
+							while (i != cursor)
+							{
+								if (i == position_now)
+								{
+									i = i + addition;
+									continue;
+								}
+								return_list.push_back(i);
+								i = i + addition;
+							}
+							return return_list;
+						}
+						else if (board_position[position_now] == w_pawn)
+						{
+							if (addition == 10)
+							{
+								if (board_position[position_now + addition] == empty)
+								{
+									return_list.push_back(position_now + addition);
+									if (((position_now - (position_now % 10)) == 1) || board_position[position_now + addition + addition] == empty)
+										return_list.push_back(position_now + addition + addition);
+									break;
+								}
+							}
+						}
+						//piece is pinned and can not make a move
+						else return return_list;
+					}
+					else break;
+				}
+
+			}
+		}
+
+
+		//####### Case piece pinned by bishop or queen #######
+
+		//check if position now and position king coordinates create a square
+
+		int x_square = (position_king % 10 - position_now % 10) * 10;
+		x_square = x_square * x_square;
+		int y_square = ((position_king - (position_king % 10)) - (position_now - (position_now % 10)));
+		y_square = y_square * y_square;
+
+		if (x_square == y_square)
+		{
+
+			// left diagonal 
+			if ((position_king % 11) == (position_now % 11))
+			{
+				if (position_king < position_now) addition = 11;
+				if (position_king > position_now) addition = -11;
+			}
+			// rigth diagonal
+			if ((position_king % 9) == (position_now % 9))
+			{
+				if (position_king < position_now) addition = 9;
+				if (position_king > position_now) addition = -9;
+			}
+
+			cursor = position_king + addition;
+
+
+			//Check if lane between king and position_now is empty 
+			no_pieces_between_king_and_position_now = true;
+			while (cursor != position_now)
+			{
+				bool temp = false;
+				if (board_position[cursor] == empty) temp = true;
+				no_pieces_between_king_and_position_now = no_pieces_between_king_and_position_now && temp;
+				cursor = cursor + addition;
+			}
+
+			if (no_pieces_between_king_and_position_now == true)
+			{
+				cursor = position_now + addition;
+				while (is_position_in_board(cursor))
+				{
+					if (board_position[cursor] == empty)
+					{
+						cursor = cursor + addition;
+						continue;
+					}
+					if (is_white(board_position[cursor])) break;
+					if (board_position[cursor] == b_queen || board_position[cursor] == b_bishop)
+					{
+						//Is my pined piece a rook or queen so it can defet the oposing rook or queen
+						if (board_position[position_now] == w_queen || board_position[position_now] == w_bishop)
+						{
+							return_list.push_back(cursor);
+							int i = position_king + addition;
+							while (i != cursor)
+							{
+								if (i == position_now)
+								{
+									i = i + addition;
+									continue;
+								}
+								return_list.push_back(i);
+								i = i + addition;
+							}
+							return return_list;
+						}
+						//piece is pinned and can not make a move
+						else return return_list;
+					}
+					else break;
+				}
+
+			}
+		}
+	}
+
+															//##### Case black pieces ####
+
+	no_pieces_between_king_and_position_now = true;
+
+	if (is_black(board_position[position_now]) && !(board_position[position_now] == b_king))
+	{
+		position_king = find_king(b_king);
+
+
+		//####### Case piece pinned by rook or queen ######
+
+		//Same colum
+		if (((position_now - position_king) % 10) == 0)
+		{
+			if (position_king < position_now) addition = 10;
+			if (position_king > position_now) addition = -10;
+		}
+		//Same row
+		if ((position_king - (position_king % 10)) == (position_now - (position_now % 10)))
+		{
+			if (position_king < position_now) addition = 1;
+			if (position_king > position_now) addition = -1;
+		}
+
+		if (addition != 0)
+		{
+			cursor = position_king + addition;
+
+			//check if there are no pieces between king and position_now
+
+			while (cursor != position_now)
+			{
+				bool temp = false;
+				if (board_position[cursor] == empty) temp = true;
+				no_pieces_between_king_and_position_now = no_pieces_between_king_and_position_now && temp;
+				cursor = cursor + addition;
+			}
+			if (no_pieces_between_king_and_position_now == true)
+			{
+
+				cursor = position_now + addition;
+
+				while (is_position_in_board(cursor))
+				{
+					if (board_position[cursor] == empty)
+					{
+						cursor = cursor + addition;
+						continue;
+					}
+					if (is_black(board_position[cursor])) break;
+					if (board_position[cursor] == w_queen || board_position[cursor] == w_rook)
+					{
+						//Is my pined piece a rook or queen so it can defet the oposing rook or queen
+						if (board_position[position_now] == b_queen || board_position[position_now] == b_rook)
+						{
+							return_list.push_back(cursor);
+							int i = position_king + addition;
+							while (i != cursor)
+							{
+								if (i == position_now)
+								{
+									i = i + addition;
+									continue;
+								}
+								return_list.push_back(i);
+								i = i + addition;
+							}
+							return return_list;
+						}
+						else if (board_position[position_now] == b_pawn)
+						{
+							if (addition == -10)
+							{
+								if (board_position[position_now + addition] == empty)
+								{
+									return_list.push_back(position_now + addition);
+									if (((position_now - (position_now % 10)) == 7) || board_position[position_now + addition + addition] == empty)
+										return_list.push_back(position_now + addition + addition);
+									break;
+								}
+							}
+						}
+						//piece is pinned and can not make a move
+						else return return_list;
+					}
+					else break;
+				}
+
+			}
+		}
+
+
+		//####### Case piece pinned by bishop or queen #######
+
+		//check if position now and position king coordinates create a square
+
+		int x_square = (position_king % 10 - position_now % 10) * 10;
+		x_square = x_square * x_square;
+		int y_square = ((position_king - (position_king % 10)) - (position_now - (position_now % 10)));
+		y_square = y_square * y_square;
+
+		if (x_square == y_square)
+		{
+
+			// left diagonal 
+			if ((position_king % 11) == (position_now % 11))
+			{
+				if (position_king < position_now) addition = 11;
+				if (position_king > position_now) addition = -11;
+			}
+			// rigth diagonal
+			if ((position_king % 9) == (position_now % 9))
+			{
+				if (position_king < position_now) addition = 9;
+				if (position_king > position_now) addition = -9;
+			}
+
+			cursor = position_king + addition;
+
+
+			//Check if lane between king and position_now is empty 
+			no_pieces_between_king_and_position_now = true;
+			while (cursor != position_now)
+			{
+				bool temp = false;
+				if (board_position[cursor] == empty) temp = true;
+				no_pieces_between_king_and_position_now = no_pieces_between_king_and_position_now && temp;
+				cursor = cursor + addition;
+			}
+
+			if (no_pieces_between_king_and_position_now == true)
+			{
+				cursor = position_now + addition;
+				while (is_position_in_board(cursor))
+				{
+					if (board_position[cursor] == empty)
+					{
+						cursor = cursor + addition;
+						continue;
+					}
+					if (is_black(board_position[cursor])) break;
+					if (board_position[cursor] == w_queen || board_position[cursor] == w_bishop)
+					{
+						//Is my pined piece a rook or queen so it can defet the oposing rook or queen
+						if (board_position[position_now] == b_queen || board_position[position_now] == b_bishop)
+						{
+							return_list.push_back(cursor);
+							int i = position_king + addition;
+							while (i != cursor)
+							{
+								if (i == position_now)
+								{
+									i = i + addition;
+									continue;
+								}
+								return_list.push_back(i);
+								i = i + addition;
+							}
+							return return_list;
+						}
+						//piece is pinned and can not make a move
+						else return return_list;
+					}
+					else break;
+				}
+
+			}
+		}
+	}
+	
+			
+		
 
 	/*__________________________________________________________________________________________________________________________________
 															case bis bishop & part Queen
@@ -1284,8 +2030,8 @@ list <int> Game::list_of_valid_moves(int position_now)
 		if (board_position[position_now] == b_pawn)
 		{
 			if ((is_position_in_board(position_now - 10)) && (board_position[position_now - 10] == empty)) return_list.push_back(position_now - 10);
-			if ((is_position_in_board(position_now - 9)) && is_black((board_position[position_now - 9]))) return_list.push_back(position_now - 9);
-			if ((is_position_in_board(position_now - 11)) && is_black((board_position[position_now - 11]))) return_list.push_back(position_now - 11);
+			if ((is_position_in_board(position_now - 9)) && is_white((board_position[position_now - 9]))) return_list.push_back(position_now - 9);
+			if ((is_position_in_board(position_now - 11)) && is_white((board_position[position_now - 11]))) return_list.push_back(position_now - 11);
 		}
 
 
@@ -1294,35 +2040,82 @@ list <int> Game::list_of_valid_moves(int position_now)
 													case king
 		__________________________________________________________________________________________________________________________________
 		*/
-		/*
+
+		int temp_board[89];
+			for (int i = 0; i <= 88; i++)
+			{
+				temp_board[i] = board_position[i];
+			}
+			temp_board[position_now] = empty;
+
+			bool enemy_king_is_not_one_field_away = true;
+
+											//###### case white king #####
 
 		if (board_position[position_now] == w_king)
 		{
 			int king_addition[8] = { 9,10,11,1,-11,-10,-9,-1 };
 
-			for (int i = 0; i <= 8; i++)
+			for (int i = 0; i <= 7; i++)
 
 			{
-				if (is_position_in_board(board_position[position_now + king_addition[i]]) &&
-					((board_position[position_now + king_addition[i]] == empty) || is_black(board_position[position_now + king_addition[i]])))
+				enemy_king_is_not_one_field_away = true;
+				if ((board_position[position_now + king_addition[i]] == empty || is_black(board_position[position_now + king_addition[i]])) && (is_position_in_board(position_now + king_addition[i])))
 				{
-					//Prüfe ob Feld Verteidigt
-					for (int i = 11; i <= 88; i++)
+					for (int j = 0; j <= 7; j++)
 					{
-						if (board_position[]);
+						if (is_position_in_board(position_now + king_addition[i] + king_addition[j]))
+							enemy_king_is_not_one_field_away = enemy_king_is_not_one_field_away && ((board_position[position_now + king_addition[i] + king_addition[j]]) != b_king);
 					}
+
+					if (enemy_king_is_not_one_field_away == true)
+					{
+						int temp_piece = temp_board[position_now + king_addition[i]];
+						temp_board[position_now + king_addition[i]] = w_king;
+						if (is_king_check(position_now + king_addition[i], &temp_board[0]) != true) return_list.push_back(position_now + king_addition[i]);
+						temp_board[position_now + king_addition[i]] = temp_piece;
+					}
+
 				}
+			}
+		}
 
+														//###### case black king ##### 
+		enemy_king_is_not_one_field_away = true;
 
+		if (board_position[position_now] == b_king)
+		{
+			int king_addition[8] = { 9,10,11,1,-11,-10,-9,-1 };
 
-				if((is_position_in_board(board_position[position_now + king_addition[i]])) && (board_position[position_now + king_addition[i]] == empty))
+			for (int i = 0; i <= 7; i++)
 
+			{
+				enemy_king_is_not_one_field_away = true;
+				if ((board_position[position_now + king_addition[i]] == empty || is_white(board_position[position_now + king_addition[i]])) 
+					&& (is_position_in_board(position_now + king_addition[i])))
+				{
+					for (int j = 0; j <= 7; j++)
+					{
+						if (is_position_in_board(position_now + king_addition[i] + king_addition[j]))
+							enemy_king_is_not_one_field_away = enemy_king_is_not_one_field_away 
+							&& ((board_position[position_now + king_addition[i] + king_addition[j]]) != w_king);
+					}
 
+					if (enemy_king_is_not_one_field_away == true)
+					{
+						int temp_piece = temp_board[position_now + king_addition[i]];
+						temp_board[position_now + king_addition[i]] = b_king;
+						if (is_king_check(position_now + king_addition[i], &temp_board[0]) != true) return_list.push_back(position_now + king_addition[i]);
+						temp_board[position_now + king_addition[i]] = temp_piece;
+					}
+
+				}
 			}
 		}
 
 
-	*/
+
+	
 
 
 
