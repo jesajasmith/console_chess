@@ -33,14 +33,13 @@ void Game::initialise_board()
 		board_position[i] = w_pawn;
 	}
 
-	//board_position[45] = w_queen;
-
+	
 
 	board_position[81] = b_rook;
 	board_position[82] = b_knight;
 	board_position[83] = b_bishop;
 	board_position[84] = b_queen;
-	//board_position[85] = b_king;
+	board_position[85] = b_king;
 	board_position[86] = b_bishop;
 	board_position[87] = b_knight; 
 	board_position[88] = b_rook;
