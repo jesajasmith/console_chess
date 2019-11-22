@@ -30,6 +30,9 @@ public:
 	bool is_black(int position);
 	bool is_white(int position);
 	void error_output(int error_num);
+	bool is_king_check(int position);
+	bool is_king_check(int position, int * temp_board);
+	int find_king(int color_king);
 
 	string board_pos_to_figure(short board);
 
@@ -40,6 +43,7 @@ public:
 	void visualisemoves(list<int> return_list);
 	int quersum(int intemp);
 	int playmove(int movefrom, int moveto,int valid);
+	
 };
 
 
