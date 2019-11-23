@@ -164,7 +164,7 @@ void Game::visualise()
 		colorleg = 15;
 	}
 
-	std::cout << "Chess Board!\n";
+	std::cout << "Chess Board!";
 
 	HANDLE hConsole;
 	int k;

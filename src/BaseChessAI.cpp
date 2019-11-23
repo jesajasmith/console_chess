@@ -1,5 +1,14 @@
 #include "BaseChessAI.h"
 
+BaseChessAI::BaseChessAI()
+{
+
+}
+
+BaseChessAI::~BaseChessAI()
+{
+}
+
 list<int> BaseChessAI::mymoves(int fieldtemp[89], int colortemp)
 {
 	for (size_t i = 10; i <= 88; i++)
@@ -27,6 +36,66 @@ list<int> BaseChessAI::mymoves(int fieldtemp[89], int colortemp)
 	}
 
 	return listmoves;
+}
+
+void BaseChessAI::setcolor(int colortemp)
+{
+	color = colortemp;
+}
+
+void BaseChessAI::sethardfield(int fieldtemp[89])
+{
+	for (size_t i = 10; i <= 88; i++)
+	{
+		field[i] = fieldtemp[i];
+	}
+}
+
+void BaseChessAI::sethardboard(int fieldtemp[89])
+{
+	for (size_t i = 10; i <= 88; i++)
+	{
+		board_position[i] = fieldtemp[i];
+	}
+}
+
+list<int> BaseChessAI::convertlisttomovesfrom(list<int> listtemp)
+{
+	list<int> listtempoutput;
+	int listsize = listtemp.size();
+
+	for (size_t i = 0; i < listsize; i++)
+	{
+		listtempoutput.push_front((*listtemp.begin())/100);
+		listtemp.pop_front();
+	}
+
+	return listtempoutput;
+}
+
+list<int> BaseChessAI::convertlisttomovesto(list<int> listtemp)
+{
+	list<int> listtempoutput;
+	int listsize = listtemp.size();
+
+	for (size_t i = 0; i < listsize; i++)
+	{
+		listtempoutput.push_front((*listtemp.begin()) % 100);
+		listtemp.pop_front();
+	}
+
+	return listtempoutput;
+
+}
+
+list<int> BaseChessAI::sortandcleanlist(list<int> listtemp)
+{
+	list<int> listtempoutput = listtemp;
+
+	listtempoutput.sort();
+	listtempoutput.unique();
+
+	return listtempoutput;
 }
 
 list<int> BaseChessAI::mypieces(int fieldtemp[89], int colortemp)
