@@ -981,8 +981,8 @@ bool Game::is_king_check(int position)
 
 		//check for pawn
 
-		if (is_position_in_board(position + 9) || board_position[position + 9] == b_pawn) return true;
-		if (is_position_in_board(position + 11) || board_position[position + 9] == b_pawn) return true;
+		if (is_position_in_board(position + 9) && board_position[position + 9] == b_pawn) return true;
+		if (is_position_in_board(position + 11) && board_position[position + 11] == b_pawn) return true;
 
 		//check for bishop & part queen
 
@@ -1008,7 +1008,7 @@ bool Game::is_king_check(int position)
 				if (is_black(board_position[next_position]))
 				{
 					if (board_position[next_position] == b_bishop || board_position[next_position] == b_queen) return true;
-					else break;
+					break;
 				}
 
 
@@ -1039,7 +1039,7 @@ bool Game::is_king_check(int position)
 				if (is_black(board_position[next_position]))
 				{
 					if (board_position[next_position] == b_rook || board_position[next_position] == b_queen) return true;
-					else break;
+					break;
 				}
 
 			}
@@ -1063,7 +1063,7 @@ bool Game::is_king_check(int position)
 		//check for pawn
 
 		if (is_position_in_board(position - 9) && board_position[position - 9] == w_pawn) return true;
-		if (is_position_in_board(position - 11) && board_position[position - 9] == w_pawn) return true;
+		if (is_position_in_board(position - 11) && board_position[position - 11] == w_pawn) return true;
 
 		//check for bishop & part queen
 
@@ -1089,7 +1089,7 @@ bool Game::is_king_check(int position)
 				if (is_white(board_position[next_position]))
 				{
 					if (board_position[next_position] == w_bishop || board_position[next_position] == w_queen) return true;
-					else break;
+					break;
 				}
 
 			}
@@ -1120,7 +1120,7 @@ bool Game::is_king_check(int position)
 				if (is_white(board_position[next_position]))
 				{
 					if (board_position[next_position] == w_rook || board_position[next_position] == w_queen) return true;
-					else break;
+					break;
 				}
 
 			}
@@ -1159,7 +1159,7 @@ bool Game::is_king_check(int position, int * temp_board)
 		//check for pawn
 
 		if (is_position_in_board(position + 9) && temp_board[position + 9] == b_pawn) return true;
-		if (is_position_in_board(position + 11) && temp_board[position + 9] == b_pawn) return true;
+		if (is_position_in_board(position + 11) && temp_board[position + 11] == b_pawn) return true;
 
 		//check for bishop & part queen
 
@@ -1186,7 +1186,7 @@ bool Game::is_king_check(int position, int * temp_board)
 				if (is_black(temp_board[next_position]))
 				{
 					if (temp_board[next_position] == b_bishop || temp_board[next_position] == b_queen) return true;
-					else break;
+					break;
 				}
 					
 
@@ -1217,7 +1217,7 @@ bool Game::is_king_check(int position, int * temp_board)
 				if (is_black(temp_board[next_position]))
 				{
 					if (temp_board[next_position] == b_rook || temp_board[next_position] == b_queen) return true;
-					else break;
+					break;
 				}
 
 			}
@@ -1241,7 +1241,7 @@ bool Game::is_king_check(int position, int * temp_board)
 		//check for pawn
 
 		if (is_position_in_board(position - 9) && temp_board[position - 9] == w_pawn) return true;
-		if (is_position_in_board(position - 11) && temp_board[position - 9] == w_pawn) return true;
+		if (is_position_in_board(position - 11) && temp_board[position - 11] == w_pawn) return true;
 
 		//check for bishop & part queen
 
@@ -1267,7 +1267,7 @@ bool Game::is_king_check(int position, int * temp_board)
 				if (is_white(temp_board[next_position]))
 				{
 					if (temp_board[next_position] == w_bishop || temp_board[next_position] == w_queen) return true;
-					else break;
+					break;
 				}
 				
 
@@ -1298,7 +1298,7 @@ bool Game::is_king_check(int position, int * temp_board)
 				if (is_white(temp_board[next_position]))
 				{
 					if (temp_board[next_position] == w_rook || temp_board[next_position] == w_queen) return true;
-					else break;
+					break;
 				}
 			}
 
@@ -1336,6 +1336,178 @@ int Game::find_king(int color_king)
 	return 11;
 }
 
+list<int> Game::list_of_king_attakers(int color_king)
+{
+	list <int> return_list;
+	int king_position;
+
+	if (color_king == w_king)
+	{
+		king_position = find_king(color_king);
+	
+		//check for Knight
+		int knight_addition[8] = { 19, 21 ,12, -8, -19, -21, -12, 8 };
+
+		for (int i = 0; i < 8; i++)
+		{
+			if (!is_position_in_board(king_position + knight_addition[i])) continue;
+			if (board_position[king_position + knight_addition[i]] == b_knight) return_list.push_back(king_position + knight_addition[i]);
+		}
+
+		//check for pawn
+
+		if (is_position_in_board(king_position + 9) && board_position[king_position + 9] == b_pawn) return_list.push_back(king_position + 9);
+		if (is_position_in_board(king_position + 11) && board_position[king_position + 11] == b_pawn) return_list.push_back(king_position + 11);
+
+		//check for bishop & part queen
+
+		int next_position;
+		int bishop_addition[4] = { 9,11,-9,-11 };
+
+		// go through all diagonals
+
+		for (int i = 0; i <= 3; i++)
+		{
+
+			next_position = king_position + bishop_addition[i];
+
+			while (is_position_in_board(next_position))
+			{
+				if (board_position[next_position] == empty)
+				{
+					next_position = next_position + bishop_addition[i];
+					continue;
+				}
+
+				if (is_white(board_position[next_position])) break;
+				if (is_black(board_position[next_position]))
+				{
+					if (board_position[next_position] == b_bishop || board_position[next_position] == b_queen) return_list.push_back(next_position);
+					break;
+				}
+
+
+			}
+
+		}
+
+		//check for rook & queen
+
+		int rook_addition[4] = { -1, 10 , 1 , -10 };
+		next_position = king_position;
+
+		for (int i = 0; i <= 3; i++)
+		{
+
+			next_position = king_position + rook_addition[i];
+
+			while (is_position_in_board(next_position))
+			{
+				if (board_position[next_position] == empty)
+				{
+					next_position = next_position + rook_addition[i];
+					continue;
+				}
+
+				if (is_white(board_position[next_position])) break;
+
+				if (is_black(board_position[next_position]))
+				{
+					if (board_position[next_position] == b_rook || board_position[next_position] == b_queen) return_list.push_back(next_position);
+					break;
+				}
+
+			}
+
+		}
+
+	}
+
+	else if (color_king == b_king)
+	{
+		king_position = find_king(color_king);
+
+		//check for Knight
+		int knight_addition[8] = { 19, 21 ,12, -8, -19, -21, -12, 8 };
+
+		for (int i = 0; i < 8; i++)
+		{
+			if (!is_position_in_board(king_position + knight_addition[i])) continue;
+			if (board_position[king_position + knight_addition[i]] == w_knight) return_list.push_back(king_position + knight_addition[i]);
+		}
+
+		//check for pawn
+
+		if (is_position_in_board(king_position - 9) && board_position[king_position - 9] == w_pawn) return_list.push_back(king_position - 9);
+		if (is_position_in_board(king_position - 11) && board_position[king_position - 11] == w_pawn) return_list.push_back(king_position - 11);
+
+		//check for bishop & part queen
+
+		int next_position;
+		int bishop_addition[4] = { 9,11,-9,-11 };
+
+		// go through all diagonals
+
+		for (int i = 0; i <= 3; i++)
+		{
+
+			next_position = king_position + bishop_addition[i];
+
+			while (is_position_in_board(next_position))
+			{
+				if (board_position[next_position] == empty)
+				{
+					next_position = next_position + bishop_addition[i];
+					continue;
+				}
+
+				if (is_black(board_position[next_position])) break;
+				if (is_white(board_position[next_position]))
+				{
+					if (board_position[next_position] == w_bishop || board_position[next_position] == w_queen) return_list.push_back(next_position);
+					break;
+				}
+
+
+			}
+
+		}
+
+		//check for rook & queen
+
+		int rook_addition[4] = { -1, 10 , 1 , -10 };
+		next_position = king_position;
+
+		for (int i = 0; i <= 3; i++)
+		{
+
+			next_position = king_position + rook_addition[i];
+
+			while (is_position_in_board(next_position))
+			{
+				if (board_position[next_position] == empty)
+				{
+					next_position = next_position + rook_addition[i];
+					continue;
+				}
+
+				if (is_black(board_position[next_position])) break;
+
+				if (is_white(board_position[next_position]))
+				{
+					if (board_position[next_position] == w_rook || board_position[next_position] == w_queen) return_list.push_back(next_position);
+					break;
+				}
+
+			}
+
+		}
+
+	}
+
+	return return_list;
+}
+
 bool Game::is_position_in_board(int position)
 {
 	//check if first and second integer are in [1,..,8] 
@@ -1361,7 +1533,7 @@ bool Game::is_white(int position)
 
 list <int> Game::list_of_valid_moves(int position_now)
 {
-	list<int> return_list;
+	list<int> return_list, empty_list;
 	//Return empty list if position isn't in board
 	if (!(is_position_in_board(position_now)))
 	{
@@ -1371,17 +1543,6 @@ list <int> Game::list_of_valid_moves(int position_now)
 	// Return empty list if board is empty
 	if (board_position[position_now] == empty) return return_list;
 
-	/*
-	//Check if King is in check
-	if (is_white(board_position[position_now]) && !(board_position[position_now] == w_king))
-	{
-		if (is_king_check(find_king(w_king))) return return_list;
-	}
-	if (is_black(board_position[position_now]) && !(board_position[position_now] == b_king))
-	{
-		if (is_king_check(find_king(b_king))) return return_list;
-	}
-	*/
 
 	/*__________________________________________________________________________________________________________________________________
 														is piece pinned
@@ -2114,19 +2275,43 @@ list <int> Game::list_of_valid_moves(int position_now)
 		}
 
 
-
-	
-
-
-
-
+		/*__________________________________________________________________________________________________________________________________
+												case king in check and move possibilitys for non king figures
+		__________________________________________________________________________________________________________________________________
+		*/
 
 
+		
+		//Case white piece
+		if (is_white(board_position[position_now]) && !(board_position[position_now] == w_king) && is_king_check(find_king(w_king)))
+		{
+			list <int> king_attaker_list = list_of_king_attakers(w_king);
+			if (king_attaker_list.size() == 1)
+			{
+				int temp = king_attaker_list.front();
+				//If attacking piec in list push.back
+				if (find(return_list.begin(), return_list.end(), temp) != return_list.end()) empty_list.push_back(temp);
+				return empty_list;
 
+			}
+			else return empty_list;
+		}
 
-		cout << return_list.size();
+		//Case black piece
+		if (is_black(board_position[position_now]) && !(board_position[position_now] == b_king) && is_king_check(find_king(b_king)))
+	   {
+			list <int> king_attaker_list = list_of_king_attakers(b_king);
+			if (king_attaker_list.size() == 1)
+			{
+				int temp = king_attaker_list.front();
+				//If attacking piec in list push.back
+				if (find(return_list.begin(), return_list.end(), temp) != return_list.end()) empty_list.push_back(temp);
+				return empty_list;
+
+			}
+			else return empty_list;
+		}
 		return return_list;
-
 	}
 
 	

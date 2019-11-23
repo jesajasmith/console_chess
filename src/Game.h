@@ -3,15 +3,12 @@
 #include "Game.h"
 #include <iostream>
 #include <string>
-
 #include <windows.h>  
 #include <list> 
 #include <algorithm>
 
 using namespace std;    // std::cout, std::cin
 
-
-using namespace std;
 class Game
 {
 public:
@@ -33,6 +30,7 @@ public:
 	bool is_king_check(int position);
 	bool is_king_check(int position, int * temp_board);
 	int find_king(int color_king);
+	list <int> list_of_king_attakers(int color_king);
 
 	string board_pos_to_figure(short board);
 
