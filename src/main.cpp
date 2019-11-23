@@ -62,7 +62,9 @@ int main() {
 
 	*/
 
-	newgame.visualisemoves(newgame.list_of_valid_moves(57));
+	newgame.visualisemoves(newgame.list_of_valid_moves(44));
+	//newgame.visualisemoves(newgame.list_of_king_attakers(12));
+
 	cin >> hi;
 
 	return 0;
