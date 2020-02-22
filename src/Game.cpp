@@ -1,855 +1,220 @@
 #include "Game.h"
-using namespace std;
 
 
-Game::Game()
-{
+Game::Game() {
+	hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+
+/* 	struct ColorTheme {
+		int colorbonw;
+		int colorbonb;
+		int colorwonw;
+		int colorwonb;
+		int colorleg;
+	};
+	ColorTheme const standard = {112,96,127,11,15};
+	ColorTheme const grey_beige = {112,96,127,111,15};
+	ColorTheme const light_dark = {112,128,127,143,15};
+	ColorTheme const colorful = {73,83,74,90,15}; */
+
+	//Theme 1 Grey and Beige
+	if (boardtheme == 1) {
+		colorbonw = 112;
+		colorbonb = 96;
+		colorwonw = 127;
+		colorwonb = 111;
+		colorleg = 15;
+	}
+	//Theme 2 Light and Dark Grey
+	if (boardtheme == 2) {
+		colorbonw = 112;
+		colorbonb = 128;
+		colorwonw = 127;
+		colorwonb = 143;
+		colorleg = 15;
+	}
+	//Theme Colorful
+	if (boardtheme == 3) {
+		colorbonw = 73;
+		colorbonb = 83;
+		colorwonw = 74;
+		colorwonb = 90;//
+		colorleg = 15;
+	}
 	initialise_board();
 }
 
-
-Game::~Game()
-{
-}
-
-void Game::initialise_board()
-{
-	for (int i = 0; i <= 88; i++)
+void Game::initialise_board() {
+	for (auto & field : board)
 	{
-		board_position[i] = 0;
+		field = 0;
 	}
 
-	board_position[11] = w_rook;
-	board_position[12] = w_knight;
-	board_position[13] = w_bishop;
-	board_position[14] = w_queen;
-	board_position[15] = w_king;
-	board_position[16] = w_bishop;
-	board_position[17] = w_knight;
-	board_position[18] = w_rook;
+	board[11] = w_rook;
+	board[12] = w_knight;
+	board[13] = w_bishop;
+	board[14] = w_queen;
+	board[15] = w_king;
+	board[16] = w_bishop;
+	board[17] = w_knight;
+	board[18] = w_rook;
 
 	for (int i = 21; i <= 28; i++)
 	{
-		board_position[i] = w_pawn;
+		board[i] = w_pawn;
 	}
 
-	
-
-	board_position[81] = b_rook;
-	board_position[82] = b_knight;
-	board_position[83] = b_bishop;
-	board_position[84] = b_queen;
-	board_position[85] = b_king;
-	board_position[86] = b_bishop;
-	board_position[87] = b_knight; 
-	board_position[88] = b_rook;
+	board[81] = b_rook;
+	board[82] = b_knight;
+	board[83] = b_bishop;
+	board[84] = b_queen;
+	board[85] = b_king;
+	board[86] = b_bishop;
+	board[87] = b_knight; 
+	board[88] = b_rook;
 
 	for (int i = 71; i <= 78; i++)
 	{
-		board_position[i] = b_pawn;
+		board[i] = b_pawn;
 	}
-
-	return;
 }
 
-string Game::board_pos_to_figure(short board)
-{
-	switch (board) {
+std::string Game::board_pos_to_figure(short board_pos) {
+	switch (board_pos) {
 	case w_pawn: return "P";
 	case w_bishop: return "B";
-	case w_knight: return "N";
+	case w_knight: return "K";
 	case w_rook: return "R";
 	case w_queen: return "Q";
-	case w_king: return "K";
+	case w_king: return "+";
 
-	case b_pawn: return "p";
-	case b_bishop: return "b";
-	case b_knight: return "n";
-	case b_rook: return "r";
-	case b_queen: return "q";
-	case b_king: return "k";
+	case b_pawn: return "P";
+	case b_bishop: return "B";
+	case b_knight: return "K";
+	case b_rook: return "R";
+	case b_queen: return "Q";
+	case b_king: return "+";
 
 	case empty: return " ";
-	default: cout << "Error in board_pos_to_figure() function!" << endl;
+	default: std::cout << "Error in board_pos_to_figure() function!" << std::endl;
 	}
 
 	return "Error in board_pos_to_figure() function!";
 
 }
 
-char Game::inttochar(int inttemp)
-{
-
-	char temp;
+std::string Game::inttochar(int const inttemp) const {
 	switch (inttemp)
 	{
-	case 1:
-		temp = 'P';
-		break;
-	case 2:
-		temp = 'K';
-		break;
-	case 3:
-		temp = 'B';
-		break;
-	case 4:
-		temp = 'R';
-		break;
-	case 5:
-		temp = 'Q';
-		break;
-	case 6:
-		temp = '+';
-		break;
-	case 7:
-		temp = 'P';
-		break;
-	case 8:
-		temp = 'K';
-		break;
-	case 9:
-		temp = 'B';
-		break;
-	case 10:
-		temp = 'R';
-		break;
-	case 11:
-		temp = 'Q';
-		break;
-	case 12:
-		temp = '+';
-		break;
+	case 1: return "P";
+	case 2: return "K";
+	case 3: return "B";
+	case 4: return "R";
+	case 5: return "Q";
+	case 6: return "+";
+	case 7: return "P";
+	case 8: return "K";
+	case 9: return "B";
+	case 10: return "R";
+	case 11: return "Q";
+	case 12: return "+";
 
-	default:
-		temp = ' ';
+	default: return " ";
 	}
-
-	return temp;
 }
 
-void Game::visualise()
-{
-	using namespace std;
-	//Colors 
-	int settemp = boardtheme;
 
-	//Theme one standart
-	int colorbonw = 112;
-	int colorbonb = 96;
-	int colorwonw = 127;
-	int colorwonb = 111;
-	int colorleg = 15;
-
-	//Theme 1 Grey and Beige
-	if (settemp == 1) {
-		colorbonw = 112;
-		colorbonb = 96;
-		colorwonw = 127;
-		colorwonb = 111;
-		colorleg = 15;
-	}
-	//Theme 2 Light and Dark Grey
-	if (settemp == 2) {
-		colorbonw = 112;
-		colorbonb = 128;
-		colorwonw = 127;
-		colorwonb = 143;
-		colorleg = 15;
-	}
-	//Theme Colorful
-	if (settemp == 3) {
-		colorbonw = 73;
-		colorbonb = 83;
-		colorwonw = 74;
-		colorwonb = 90;//
-		colorleg = 15;
-	}
-
-	std::cout << "Chess Board!\n";
-
-	HANDLE hConsole;
-	int k;
-
-	hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-	SetConsoleTextAttribute(hConsole, colorleg);
-
-	cout << endl;
-
-	cout << "   A  B  C  D  E  F  G  H  "<< endl;
-	//ROW 1
-	
-	SetConsoleTextAttribute(hConsole, colorleg);
-	cout << "1 ";
-	for (size_t i1 = 11; i1 <= 18; i1++)
-	{
-		int colortemp;
-		if ((i1 % 2))
-		{
-			if (board_position[i1] <= 6) { colortemp = colorwonw; }
-			else { colortemp = colorbonw; }
-		}
-		else
-		{
-			if (board_position[i1] <= 6) { colortemp = colorwonb; }
-			else { colortemp = colorbonb; }
-		}
-
-
-		SetConsoleTextAttribute(hConsole, colortemp);
-		cout << " " << inttochar(board_position[i1]) << " ";
-	}
-	SetConsoleTextAttribute(hConsole, colorleg);
-	cout << " 1" << endl;
-
-	//ROW 2
-	SetConsoleTextAttribute(hConsole, colorleg);
-	cout << "2 ";
-	for (size_t i2 = 21; i2 <= 28; i2++)
-	{
-		int colortemp;
-		if (((i2 + 1) % 2))
-		{
-			if (board_position[i2] <= 6) { colortemp = colorwonw; }
-			else { colortemp = colorbonw; }
-		}
-		else
-		{
-			if (board_position[i2] <= 6) { colortemp = colorwonb; }
-			else { colortemp = colorbonb; }
-		}
-
-
-		SetConsoleTextAttribute(hConsole, colortemp);
-		cout << " " << inttochar(board_position[i2]) << " ";
-	}
-	SetConsoleTextAttribute(hConsole, colorleg);
-	cout << " 2" << endl;
-
-	//ROW 3
-	SetConsoleTextAttribute(hConsole, colorleg);
-	cout << "3 ";
-	for (size_t i3 = 31; i3 <= 38; i3++)
-	{
-		int colortemp;
-		if (((i3) % 2))
-		{
-			if (board_position[i3] <= 6) { colortemp = colorwonw; }
-			else { colortemp = colorbonw; }
-		}
-		else
-		{
-			if (board_position[i3] <= 6) { colortemp = colorwonb; }
-			else { colortemp = colorbonb; }
-		}
-
-
-		SetConsoleTextAttribute(hConsole, colortemp);
-		cout << " " << inttochar(board_position[i3]) << " ";
-	}
-	SetConsoleTextAttribute(hConsole, colorleg);
-	cout << " 3" << endl;
-
-	//ROW 4
-	SetConsoleTextAttribute(hConsole, colorleg);
-	cout << "4 ";
-	for (size_t i4 = 41; i4 <= 48; i4++)
-	{
-		int colortemp;
-		if (((i4 + 1) % 2))
-		{
-			if (board_position[i4] <= 6) { colortemp = colorwonw; }
-			else { colortemp = colorbonw; }
-		}
-		else
-		{
-			if (board_position[i4] <= 6) { colortemp = colorwonb; }
-			else { colortemp = colorbonb; }
-		}
-
-
-		SetConsoleTextAttribute(hConsole, colortemp);
-		cout << " " << inttochar(board_position[i4]) << " ";
-	}
-	SetConsoleTextAttribute(hConsole, colorleg);
-	cout << " 4" << endl;
-
-	//ROW 5
-	SetConsoleTextAttribute(hConsole, colorleg);
-	cout << "5 ";
-	for (size_t i5 = 51; i5 <= 58; i5++)
-	{
-		int colortemp;
-		if (((i5) % 2))
-		{
-			if (board_position[i5] <= 6) { colortemp = colorwonw; }
-			else { colortemp = colorbonw; }
-		}
-		else
-		{
-			if (board_position[i5] <= 6) { colortemp = colorwonb; }
-			else { colortemp = colorbonb; }
-		}
-
-
-		SetConsoleTextAttribute(hConsole, colortemp);
-		cout << " " << inttochar(board_position[i5]) << " ";
-	}
-	SetConsoleTextAttribute(hConsole, colorleg);
-	cout << " 5" << endl;
-
-	//ROW 6
-	SetConsoleTextAttribute(hConsole, colorleg);
-	cout << "6 ";
-	for (size_t i6 = 61; i6 <= 68; i6++)
-	{
-		int colortemp;
-		if (((i6 + 1) % 2))
-		{
-			if (board_position[i6] <= 6) { colortemp = colorwonw; }
-			else { colortemp = colorbonw; }
-		}
-		else
-		{
-			if (board_position[i6] <= 6) { colortemp = colorwonb; }
-			else { colortemp = colorbonb; }
-		}
-
-
-		SetConsoleTextAttribute(hConsole, colortemp);
-		cout << " " << inttochar(board_position[i6]) << " ";
-	}
-	SetConsoleTextAttribute(hConsole, colorleg);
-	cout << " 6" << endl;
-
-	//ROW 7
-	SetConsoleTextAttribute(hConsole, colorleg);
-	cout << "7 ";
-	for (size_t i7 = 71; i7 <= 78; i7++)
-	{
-		int colortemp;
-		if (((i7) % 2))
-		{
-			if (board_position[i7] <= 6) { colortemp = colorwonw; }
-			else { colortemp = colorbonw; }
-		}
-		else
-		{
-			if (board_position[i7] <= 6) { colortemp = colorwonb; }
-			else { colortemp = colorbonb; }
-		}
-
-
-		SetConsoleTextAttribute(hConsole, colortemp);
-		cout << " " << inttochar(board_position[i7]) << " ";
-	}
-	SetConsoleTextAttribute(hConsole, colorleg);
-	cout << " 7" << endl;
-
-	//ROW 8
-	SetConsoleTextAttribute(hConsole, colorleg);
-	cout << "8 ";
-	for (size_t i8 = 81; i8 <= 88; i8++)
-	{
-		int colortemp;
-		if (((i8 + 1) % 2))
-		{
-			if (board_position[i8] <= 6) { colortemp = colorwonw; }
-			else { colortemp = colorbonw; }
-		}
-		else
-		{
-			if (board_position[i8] <= 6) { colortemp = colorwonb; }
-			else { colortemp = colorbonb; }
-		}
-
-
-		SetConsoleTextAttribute(hConsole, colortemp);
-		cout << " " << inttochar(board_position[i8]) << " ";
-	}
-	SetConsoleTextAttribute(hConsole, colorleg);
-	cout << " 8" << endl;
-	cout << "   A  B  C  D  E  F  G  H  " << endl;
-
-
-
-	cout << endl;
-	//cin.get(); // wait
-	
+void Game::set_console_color(int const color) {
+	SetConsoleTextAttribute(hConsole, color);
 }
 
-void Game::visualisemoves(list<int> listvalidmoves)
-{
-
-	//Colors 
-	int settemp = boardtheme;
-
-	//Theme one standart
-	int colorbonw = 112;
-	int colorbonb = 96;
-	int colorwonw = 127;
-	int colorwonb = 111;
-	int colorleg = 15;
-
-	//Theme 1 Grey and Beige
-	if (settemp == 1) {
-		colorbonw = 112;
-		colorbonb = 96;
-		colorwonw = 127;
-		colorwonb = 111;
-		colorleg = 15;
-	}
-	//Theme 2 Light and Dark Grey
-	if (settemp == 2) {
-		colorbonw = 112;
-		colorbonb = 128;
-		colorwonw = 127;
-		colorwonb = 143;
-		colorleg = 15;
-	}
-	//Theme Colorful
-	if (settemp == 3) {
-		colorbonw = 73;
-		colorbonb = 83;
-		colorwonw = 74;
-		colorwonb = 90;//
-		colorleg = 15;
-	}
-
+void Game::visualise() {
 	std::cout << "Chess Board!\n";
-
-	HANDLE hConsole;
-	int k;
-
-	hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-	SetConsoleTextAttribute(hConsole, colorleg);
-
-	cout << endl;
-
-	cout << "   A  B  C  D  E  F  G  H  " << endl;
-	//ROW 1
-	SetConsoleTextAttribute(hConsole, colorleg);
-	cout << "1 ";
-	for (size_t i1 = 11; i1 <= 18; i1++)
-	{
-		int colortemp;
-		if ((i1 % 2))
+	set_console_color(colorleg);
+	std::cout << "\n   A  B  C  D  E  F  G  H  "<< std::endl;
+	for(int i = 1;i<9;i++) {
+		set_console_color(colorleg);
+		std::cout << i<<" ";
+		for (size_t i1 = 10*i+1; i1 <= 10*i+8; i1++)
 		{
-			if (board_position[i1] <= 6) { colortemp = colorwonw; }
-			else { colortemp = colorbonw; }
-		}
-		else
-		{
-			if (board_position[i1] <= 6) { colortemp = colorwonb; }
-			else { colortemp = colorbonb; }
-		}
-
-
-		SetConsoleTextAttribute(hConsole, colortemp);
-		if ((std::find(listvalidmoves.begin(), listvalidmoves.end(), i1) != listvalidmoves.end()))
-		{
-			int colormarker = 64;
-			if (board_position[i1] <= 6)
+			int colortemp;
+			if ( (i1+i+1) % 2 )
 			{
-				colormarker = 79;
-				if (quersum(i1) % 2) {
-					colormarker = 79;
-				}
-				else
-				{
-					colormarker = 207;
-				}
+				if (board[i1] <= 6) { colortemp = colorwonw; }
+				else { colortemp = colorbonw; }
 			}
 			else
 			{
-				colormarker = 64;
-				if (quersum(i1) % 2) {
-					colormarker = 64;
-				}
-				else
-				{
-					colormarker = 192;
-				}
+				if (board[i1] <= 6) { colortemp = colorwonb; }
+				else { colortemp = colorbonb; }
 			}
-			SetConsoleTextAttribute(hConsole, colormarker);
+
+			set_console_color(colortemp);
+			std::cout << " " << inttochar(board[i1]) << " ";
 		}
 		
-		cout << " " << inttochar(board_position[i1]) << " ";
+		set_console_color(colorleg);
+		std::cout << " " << i << std::endl;
 	}
-	SetConsoleTextAttribute(hConsole, colorleg);
-	cout << " 1" << endl;
-
-	//ROW 2
-	SetConsoleTextAttribute(hConsole, colorleg);
-	cout << "2 ";
-	for (size_t i2 = 21; i2 <= 28; i2++)
-	{
-		int colortemp;
-		if (((i2 + 1) % 2))
-		{
-			if (board_position[i2] <= 6) { colortemp = colorwonw; }
-			else { colortemp = colorbonw; }
-		}
-		else
-		{
-			if (board_position[i2] <= 6) { colortemp = colorwonb; }
-			else { colortemp = colorbonb; }
-		}
-
-
-		SetConsoleTextAttribute(hConsole, colortemp);
-
-		if ((std::find(listvalidmoves.begin(), listvalidmoves.end(), i2) != listvalidmoves.end()))
-		{
-			int colormarker = 64;
-			if (board_position[i2] <= 6)
-			{
-				colormarker = 79;
-				if (quersum(i2) % 2) {
-					colormarker = 79;
-				}
-				else
-				{
-					colormarker = 207;
-				}
-			}
-			else
-			{
-				colormarker = 64;
-				if (quersum(i2) % 2) {
-					colormarker = 64;
-				}
-				else
-				{
-					colormarker = 192;
-				}
-			}
-			SetConsoleTextAttribute(hConsole, colormarker);
-		}
-		cout << " " << inttochar(board_position[i2]) << " ";
-	}
-	SetConsoleTextAttribute(hConsole, colorleg);
-	cout << " 2" << endl;
-
-	//ROW 3
-	SetConsoleTextAttribute(hConsole, colorleg);
-	cout << "3 ";
-	for (size_t i3 = 31; i3 <= 38; i3++)
-	{
-		int colortemp;
-		if (((i3) % 2))
-		{
-			if (board_position[i3] <= 6) { colortemp = colorwonw; }
-			else { colortemp = colorbonw; }
-		}
-		else
-		{
-			if (board_position[i3] <= 6) { colortemp = colorwonb; }
-			else { colortemp = colorbonb; }
-		}
-
-
-		SetConsoleTextAttribute(hConsole, colortemp);
-		if ((std::find(listvalidmoves.begin(), listvalidmoves.end(), i3) != listvalidmoves.end()))
-		{
-			int colormarker = 64;
-			if (board_position[i3] <= 6)
-			{
-				colormarker = 79;
-				if (quersum(i3) % 2) {
-					colormarker = 79;
-				}
-				else
-				{
-					colormarker = 207;
-				}
-			}
-			else
-			{
-				colormarker = 64;
-				if (quersum(i3) % 2) {
-					colormarker = 64;
-				}
-				else
-				{
-					colormarker = 192;
-				}
-			}
-			SetConsoleTextAttribute(hConsole, colormarker);
-		}
-		cout << " " << inttochar(board_position[i3]) << " ";
-	}
-	SetConsoleTextAttribute(hConsole, colorleg);
-	cout << " 3" << endl;
-
-	//ROW 4
-	SetConsoleTextAttribute(hConsole, colorleg);
-	cout << "4 ";
-	for (size_t i4 = 41; i4 <= 48; i4++)
-	{
-		int colortemp;
-		if (((i4 + 1) % 2))
-		{
-			if (board_position[i4] <= 6) { colortemp = colorwonw; }
-			else { colortemp = colorbonw; }
-		}
-		else
-		{
-			if (board_position[i4] <= 6) { colortemp = colorwonb; }
-			else { colortemp = colorbonb; }
-		}
-
-
-		SetConsoleTextAttribute(hConsole, colortemp);
-		if ((std::find(listvalidmoves.begin(), listvalidmoves.end(), i4) != listvalidmoves.end()))
-		{
-			int colormarker = 64;
-			if (board_position[i4] <= 6)
-			{
-				colormarker = 79;
-				if (quersum(i4) % 2) {
-					colormarker = 79;
-				}
-				else
-				{
-					colormarker = 207;
-				}
-			}
-			else
-			{
-				colormarker = 64;
-				if (quersum(i4) % 2) {
-					colormarker = 64;
-				}
-				else
-				{
-					colormarker = 192;
-				}
-			}
-			SetConsoleTextAttribute(hConsole, colormarker);
-		}
-		cout << " " << inttochar(board_position[i4]) << " ";
-	}
-	SetConsoleTextAttribute(hConsole, colorleg);
-	cout << " 4" << endl;
-
-	//ROW 5
-	SetConsoleTextAttribute(hConsole, colorleg);
-	cout << "5 ";
-	for (size_t i5 = 51; i5 <= 58; i5++)
-	{
-		int colortemp;
-		if (((i5) % 2))
-		{
-			if (board_position[i5] <= 6) { colortemp = colorwonw; }
-			else { colortemp = colorbonw; }
-		}
-		else
-		{
-			if (board_position[i5] <= 6) { colortemp = colorwonb; }
-			else { colortemp = colorbonb; }
-		}
-
-
-		SetConsoleTextAttribute(hConsole, colortemp);
-		if ((std::find(listvalidmoves.begin(), listvalidmoves.end(), i5) != listvalidmoves.end()))
-		{
-			int colormarker = 64;
-			if (board_position[i5] <= 6)
-			{
-				colormarker = 79;
-				if (quersum(i5) % 2) {
-					colormarker = 79;
-				}
-				else
-				{
-					colormarker = 207;
-				}
-			}
-			else
-			{
-				colormarker = 64;
-				if (quersum(i5) % 2) {
-					colormarker = 64;
-				}
-				else
-				{
-					colormarker = 192;
-				}
-			}
-			SetConsoleTextAttribute(hConsole, colormarker);
-		}
-		cout << " " << inttochar(board_position[i5]) << " ";
-	}
-	SetConsoleTextAttribute(hConsole, colorleg);
-	cout << " 5" << endl;
-
-	//ROW 6
-	SetConsoleTextAttribute(hConsole, colorleg);
-	cout << "6 ";
-	for (size_t i6 = 61; i6 <= 68; i6++)
-	{
-		int colortemp;
-		if (((i6 + 1) % 2))
-		{
-			if (board_position[i6] <= 6) { colortemp = colorwonw; }
-			else { colortemp = colorbonw; }
-		}
-		else
-		{
-			if (board_position[i6] <= 6) { colortemp = colorwonb; }
-			else { colortemp = colorbonb; }
-		}
-
-
-		SetConsoleTextAttribute(hConsole, colortemp);
-		if ((std::find(listvalidmoves.begin(), listvalidmoves.end(), i6) != listvalidmoves.end()))
-		{
-			int colormarker = 64;
-			if (board_position[i6] <= 6)
-			{
-				colormarker = 79;
-				if (quersum(i6) % 2) {
-					colormarker = 79;
-				}
-				else
-				{
-					colormarker = 207;
-				}
-			}
-			else
-			{
-				colormarker = 64;
-				if (quersum(i6) % 2) {
-					colormarker = 64;
-				}
-				else
-				{
-					colormarker = 192;
-				}
-			}
-			SetConsoleTextAttribute(hConsole, colormarker);
-		}
-		cout << " " << inttochar(board_position[i6]) << " ";
-	}
-	SetConsoleTextAttribute(hConsole, colorleg);
-	cout << " 6" << endl;
-
-	//ROW 7
-	SetConsoleTextAttribute(hConsole, colorleg);
-	cout << "7 ";
-	for (size_t i7 = 71; i7 <= 78; i7++)
-	{
-		int colortemp;
-		if (((i7) % 2))
-		{
-			if (board_position[i7] <= 6) { colortemp = colorwonw; }
-			else { colortemp = colorbonw; }
-		}
-		else
-		{
-			if (board_position[i7] <= 6) { colortemp = colorwonb; }
-			else { colortemp = colorbonb; }
-		}
-
-
-		SetConsoleTextAttribute(hConsole, colortemp);
-		if ((std::find(listvalidmoves.begin(), listvalidmoves.end(), i7) != listvalidmoves.end()))
-		{
-			int colormarker = 64;
-			if (board_position[i7] <= 6)
-			{
-				colormarker = 79;
-				if (quersum(i7) % 2) {
-					colormarker = 79;
-				}
-				else
-				{
-					colormarker = 207;
-				}
-			}
-			else
-			{
-				colormarker = 64;
-				if (quersum(i7) % 2) {
-					colormarker = 64;
-				}
-				else
-				{
-					colormarker = 192;
-				}
-			}
-
-			SetConsoleTextAttribute(hConsole, colormarker);
-		}
-			cout << " " << inttochar(board_position[i7]) << " ";
-		}
 	
-	SetConsoleTextAttribute(hConsole, colorleg);
-	cout << " 7" << endl;
+	std::cout << "   A  B  C  D  E  F  G  H  " << std::endl << std::endl;
+}
 
-	//ROW 8
-	SetConsoleTextAttribute(hConsole, colorleg);
-	cout << "8 ";
-	for (size_t i8 = 81; i8 <= 88; i8++)
-	{
-		int colortemp;
-		if (((i8 + 1) % 2))
-		{
-			if (board_position[i8] <= 6) { colortemp = colorwonw; }
-			else { colortemp = colorbonw; }
-		}
-		else
-		{
-			if (board_position[i8] <= 6) { colortemp = colorwonb; }
-			else { colortemp = colorbonb; }
-		}
+void Game::visualisemoves(std::list<int> listvalidmoves) {
+	std::cout << "Chess Board!\n";
+	set_console_color(colorleg);
+	std::cout << "\n   A  B  C  D  E  F  G  H  " << std::endl;
+	for(auto row = 1; row<9; row++) {
+		set_console_color(colorleg);
+		std::cout << row << " ";
+		for (auto column = 10*row+1; column <= 10*row+8; column++) {
+			int colortemp;
+			if ( (column+row+1) % 2 ) {
+				if (board[column] <= 6) { 
+					colortemp = colorwonw; 
+				} else { 
+					colortemp = colorbonw; 
+				}
+			} else {
+				if (board[column] <= 6) { 
+					colortemp = colorwonb; 
+				} else { 
+					colortemp = colorbonb; 
+				}
+			}
 
 
-		SetConsoleTextAttribute(hConsole, colortemp);
-		if ((std::find(listvalidmoves.begin(), listvalidmoves.end(), i8) != listvalidmoves.end()))
-		{
-			int colormarker = 64;
-			if (board_position[i8] <= 6)
-			{
-				colormarker = 79;
-				if (quersum(i8) % 2) {
+			set_console_color(colortemp);
+			if ((std::find(listvalidmoves.begin(), listvalidmoves.end(), column) != listvalidmoves.end())) {
+				int colormarker = 64;
+				if (board[column] <= 6) {
 					colormarker = 79;
-				}
-				else
-				{
-					colormarker = 207;
-				}
-			}
-			else
-			{
-				colormarker = 64;
-				if (quersum(i8) % 2) {
+					if (quersum(column) % 2) {
+						colormarker = 79;
+					} else {
+						colormarker = 207;
+					}
+				} else {
 					colormarker = 64;
+					if (quersum(column) % 2) {
+						colormarker = 64;
+					} else {
+						colormarker = 192;
+					}
 				}
-				else
-				{
-					colormarker = 192;
-				}
+				set_console_color(colormarker);
 			}
-			SetConsoleTextAttribute(hConsole, colormarker);
+			
+			std::cout << " " << inttochar(board[column]) << " ";
 		}
-			cout << " " << inttochar(board_position[i8]) << " ";
-		}
-		SetConsoleTextAttribute(hConsole, colorleg);
-
-		cout << " 8" << endl;
-		cout << "   A  B  C  D  E  F  G  H  " << endl;
-
-
-
-		cout << endl;
-		//cin.get(); // wait
+		set_console_color(colorleg);
+		std::cout << " " << row << std::endl;
 	}
+	std::cout << "   A  B  C  D  E  F  G  H  " << std::endl << std::endl;
+}
 
 
 
-int Game::quersum(int intemp)
-{
+int Game::quersum(int intemp) {
 	int outtemp = 0;
 	while (intemp > 0) {
 		outtemp += intemp % 10;
@@ -858,90 +223,46 @@ int Game::quersum(int intemp)
 	return outtemp;
 }
 
-int Game::playmove(int movefrom, int moveto, int valid)
-{
-
-
+int Game::playmove(int movefrom, int moveto, int valid) {
 	//Overwrite array
 
 	//Confirm kill
 	int killconftemp = 0;
 	int killtemp = 0;
-	char killchartemp = ' ';
-	string killtypetemp = "";
+	std::string killchartemp = " ";
+	std::string killtypetemp = "";
 
-		if (board_position[moveto] != 0) 
-		{
-			killtemp = board_position[moveto];
+		if (board[moveto] != 0) {
+			killtemp = board[moveto];
 			killchartemp = inttochar(killtemp);
 			killconftemp = 1;
 		}
 
-		if (killtemp <= 6)
-		{
+		if (killtemp <= 6) {
 			killtypetemp = "white";
 		}
-		else
-		{
+		else {
 			killtypetemp = "black";
 		}
 
 
-	board_position[movefrom] = 0;
-	board_position[moveto] = board_position[movefrom];
+    board[moveto] = board[movefrom];
+	board[movefrom] = 0;
+	
 
+	set_console_color(15);
 
-	HANDLE hConsole;
-	hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-	SetConsoleTextAttribute(hConsole, 15);
-	cout << endl;
-	cout << movefrom <<" moved to " << moveto;
-	if (killconftemp)
-	{
-		cout << killtypetemp << killchartemp << "was killed";
+	std::cout << std::endl << movefrom <<" moved to " << moveto;
+	if (killconftemp) {
+		std::cout << killtypetemp << killchartemp << "was killed";
 	}
-	cout << endl;
+	std::cout << std::endl;
 
 	return 0;
 }
 
-
-void Game::output_board()
-{
-	cout << endl << endl;
-
-	int letters = 9;
-	cout << "     ---------------------------------" << endl;
-	for (int i = 88; i >= 11; i--)
-	{
-	
-		//if you reach end of line 
-		if (i % 10 == 0)
-		{
-			i = i - 2;
-			cout << "|" << endl;
-			cout << "     ---------------------------------" << endl;
-		}
-
-		if (i % 10 == 8)
-		{ 
-			cout << "  " << --letters << "  ";
-		}
-
-		cout << "| " << board_pos_to_figure(board_position[i]) << " ";
-		
-	}
-	cout << "|" << endl
-		 << "     ---------------------------------" << endl
-		<< "     ";
-	for (int i = 97; i <= 104; i++)
-	{
-		cout << "  " << (char)i << " ";
-	}
-}
-void Game::error_output(int error_num)
-{
-	string error_msg;
+void Game::error_output(int const error_num) const {
+	std::string error_msg;
 
 	switch(error_num)
 	{
@@ -953,22 +274,21 @@ void Game::error_output(int error_num)
 		break;
 	}
 
-	cout << "An error has acured ->  " << error_msg << endl;
+	std::cout << "An error has acured ->  " << error_msg << std::endl;
 	int temp_input;
-	cin >> temp_input;
+	std::cin >> temp_input;
 
 	return;
 }
 
-bool Game::is_king_check(int position)
-{
+bool Game::is_king(int position) const {
 	if (!is_position_in_board(position))
 	{
 		error_output(1);
 		return false;
 	}
 
-	if (board_position[position] == w_king)
+	if (board[position] == w_king)
 	{
 		//check for Knight
 		int knight_addition[8] = { 19, 21 ,12, -8, -19, -21, -12, 8 };
@@ -976,13 +296,13 @@ bool Game::is_king_check(int position)
 		for (int i = 0; i < 8; i++)
 		{
 			if (!is_position_in_board(position + knight_addition[i])) continue;
-			if (board_position[position + knight_addition[i]] == b_knight) return true;
+			if (board[position + knight_addition[i]] == b_knight) return true;
 		}
 
 		//check for pawn
 
-		if (is_position_in_board(position + 9) && board_position[position + 9] == b_pawn) return true;
-		if (is_position_in_board(position + 11) && board_position[position + 11] == b_pawn) return true;
+		if (is_position_in_board(position + 9) && board[position + 9] == b_pawn) return true;
+		if (is_position_in_board(position + 11) && board[position + 11] == b_pawn) return true;
 
 		//check for bishop & part queen
 
@@ -998,16 +318,16 @@ bool Game::is_king_check(int position)
 
 			while (is_position_in_board(next_position))
 			{
-				if (board_position[next_position] == empty)
+				if (board[next_position] == empty)
 				{
 					next_position = next_position + bishop_addition[i];
 					continue;
 				}
 
-				if (is_white(board_position[next_position])) break;
-				if (is_black(board_position[next_position]))
+				if (is_white(board[next_position])) break;
+				if (is_black(board[next_position]))
 				{
-					if (board_position[next_position] == b_bishop || board_position[next_position] == b_queen) return true;
+					if (board[next_position] == b_bishop || board[next_position] == b_queen) return true;
 					break;
 				}
 
@@ -1028,17 +348,17 @@ bool Game::is_king_check(int position)
 
 			while (is_position_in_board(next_position))
 			{
-				if (board_position[next_position] == empty)
+				if (board[next_position] == empty)
 				{
 					next_position = next_position + rook_addition[i];
 					continue;
 				}
 
-				if (is_white(board_position[next_position])) break;
+				if (is_white(board[next_position])) break;
 
-				if (is_black(board_position[next_position]))
+				if (is_black(board[next_position]))
 				{
-					if (board_position[next_position] == b_rook || board_position[next_position] == b_queen) return true;
+					if (board[next_position] == b_rook || board[next_position] == b_queen) return true;
 					break;
 				}
 
@@ -1048,8 +368,7 @@ bool Game::is_king_check(int position)
 		return false;
 	}
 
-
-	else if (board_position[position] == b_king)
+	else if (board[position] == b_king)
 	{
 		//check for Knight
 		int knight_addition[8] = { 19, 21 ,12, -8, -19, -21, -12, 8 };
@@ -1057,13 +376,13 @@ bool Game::is_king_check(int position)
 		for (int i = 0; i < 8; i++)
 		{
 			if (!is_position_in_board(position + knight_addition[i])) continue;
-			if (board_position[position + knight_addition[i]] == w_knight) return true;
+			if (board[position + knight_addition[i]] == w_knight) return true;
 		}
 
 		//check for pawn
 
-		if (is_position_in_board(position - 9) && board_position[position - 9] == w_pawn) return true;
-		if (is_position_in_board(position - 11) && board_position[position - 11] == w_pawn) return true;
+		if (is_position_in_board(position - 9) && board[position - 9] == w_pawn) return true;
+		if (is_position_in_board(position - 11) && board[position - 11] == w_pawn) return true;
 
 		//check for bishop & part queen
 
@@ -1079,16 +398,16 @@ bool Game::is_king_check(int position)
 
 			while (is_position_in_board(next_position))
 			{
-				if (board_position[next_position] == empty)
+				if (board[next_position] == empty)
 				{
 					next_position = next_position + bishop_addition[i];
 					continue;
 				}
 
-				if (is_black(board_position[next_position])) break;
-				if (is_white(board_position[next_position]))
+				if (is_black(board[next_position])) break;
+				if (is_white(board[next_position]))
 				{
-					if (board_position[next_position] == w_bishop || board_position[next_position] == w_queen) return true;
+					if (board[next_position] == w_bishop || board[next_position] == w_queen) return true;
 					break;
 				}
 
@@ -1108,18 +427,18 @@ bool Game::is_king_check(int position)
 
 			while (is_position_in_board(next_position))
 			{
-				if (board_position[next_position] == empty)
+				if (board[next_position] == empty)
 			
 				{
 					next_position = next_position + rook_addition[i];
 					continue;
 				}
 
-				if (is_black(board_position[next_position])) break;
+				if (is_black(board[next_position])) break;
 
-				if (is_white(board_position[next_position]))
+				if (is_white(board[next_position]))
 				{
-					if (board_position[next_position] == w_rook || board_position[next_position] == w_queen) return true;
+					if (board[next_position] == w_rook || board[next_position] == w_queen) return true;
 					break;
 				}
 
@@ -1131,14 +450,11 @@ bool Game::is_king_check(int position)
 
 	}
 
-	
-
 	else error_output(3);
 	return false;
 }
 
-bool Game::is_king_check(int position, int * temp_board)
-{
+bool Game::is_king(int const position, Board const& temp_board) const {
 	if (!is_position_in_board(position))
 	{
 		error_output(1);
@@ -1314,31 +630,17 @@ bool Game::is_king_check(int position, int * temp_board)
 	return false;
 }
 
-int Game::find_king(int color_king)
-{
-	if (color_king == w_king)
-	{
-		for (int i = 11; i <= 88; i++)
-		{
-			if (board_position[i] == w_king) return i;
-		}
+int Game::find_king(int const color_king) const {
+    
+	for (auto const& position : board) {
+		if (position == color_king) return i;
 	}
-
-	else if (color_king == b_king)
-	{
-		for (int i = 11; i <= 88; i++)
-		{
-			if (board_position[i] == b_king) return i;
-		}
-	}
-
-	else error_output(3);
+	error_output(3);
 	return 11;
 }
 
-list<int> Game::list_of_king_attakers(int color_king)
-{
-	list <int> return_list;
+std::list<int> Game::list_of_king_attakers(int color_king) {
+	std::list<int> return_list;
 	int king_position;
 
 	if (color_king == w_king)
@@ -1351,13 +653,13 @@ list<int> Game::list_of_king_attakers(int color_king)
 		for (int i = 0; i < 8; i++)
 		{
 			if (!is_position_in_board(king_position + knight_addition[i])) continue;
-			if (board_position[king_position + knight_addition[i]] == b_knight) return_list.push_back(king_position + knight_addition[i]);
+			if (board[king_position + knight_addition[i]] == b_knight) return_list.push_back(king_position + knight_addition[i]);
 		}
 
 		//check for pawn
 
-		if (is_position_in_board(king_position + 9) && board_position[king_position + 9] == b_pawn) return_list.push_back(king_position + 9);
-		if (is_position_in_board(king_position + 11) && board_position[king_position + 11] == b_pawn) return_list.push_back(king_position + 11);
+		if (is_position_in_board(king_position + 9) && board[king_position + 9] == b_pawn) return_list.push_back(king_position + 9);
+		if (is_position_in_board(king_position + 11) && board[king_position + 11] == b_pawn) return_list.push_back(king_position + 11);
 
 		//check for bishop & part queen
 
@@ -1373,16 +675,16 @@ list<int> Game::list_of_king_attakers(int color_king)
 
 			while (is_position_in_board(next_position))
 			{
-				if (board_position[next_position] == empty)
+				if (board[next_position] == empty)
 				{
 					next_position = next_position + bishop_addition[i];
 					continue;
 				}
 
-				if (is_white(board_position[next_position])) break;
-				if (is_black(board_position[next_position]))
+				if (is_white(board[next_position])) break;
+				if (is_black(board[next_position]))
 				{
-					if (board_position[next_position] == b_bishop || board_position[next_position] == b_queen) return_list.push_back(next_position);
+					if (board[next_position] == b_bishop || board[next_position] == b_queen) return_list.push_back(next_position);
 					break;
 				}
 
@@ -1403,17 +705,17 @@ list<int> Game::list_of_king_attakers(int color_king)
 
 			while (is_position_in_board(next_position))
 			{
-				if (board_position[next_position] == empty)
+				if (board[next_position] == empty)
 				{
 					next_position = next_position + rook_addition[i];
 					continue;
 				}
 
-				if (is_white(board_position[next_position])) break;
+				if (is_white(board[next_position])) break;
 
-				if (is_black(board_position[next_position]))
+				if (is_black(board[next_position]))
 				{
-					if (board_position[next_position] == b_rook || board_position[next_position] == b_queen) return_list.push_back(next_position);
+					if (board[next_position] == b_rook || board[next_position] == b_queen) return_list.push_back(next_position);
 					break;
 				}
 
@@ -1433,13 +735,13 @@ list<int> Game::list_of_king_attakers(int color_king)
 		for (int i = 0; i < 8; i++)
 		{
 			if (!is_position_in_board(king_position + knight_addition[i])) continue;
-			if (board_position[king_position + knight_addition[i]] == w_knight) return_list.push_back(king_position + knight_addition[i]);
+			if (board[king_position + knight_addition[i]] == w_knight) return_list.push_back(king_position + knight_addition[i]);
 		}
 
 		//check for pawn
 
-		if (is_position_in_board(king_position - 9) && board_position[king_position - 9] == w_pawn) return_list.push_back(king_position - 9);
-		if (is_position_in_board(king_position - 11) && board_position[king_position - 11] == w_pawn) return_list.push_back(king_position - 11);
+		if (is_position_in_board(king_position - 9) && board[king_position - 9] == w_pawn) return_list.push_back(king_position - 9);
+		if (is_position_in_board(king_position - 11) && board[king_position - 11] == w_pawn) return_list.push_back(king_position - 11);
 
 		//check for bishop & part queen
 
@@ -1455,16 +757,16 @@ list<int> Game::list_of_king_attakers(int color_king)
 
 			while (is_position_in_board(next_position))
 			{
-				if (board_position[next_position] == empty)
+				if (board[next_position] == empty)
 				{
 					next_position = next_position + bishop_addition[i];
 					continue;
 				}
 
-				if (is_black(board_position[next_position])) break;
-				if (is_white(board_position[next_position]))
+				if (is_black(board[next_position])) break;
+				if (is_white(board[next_position]))
 				{
-					if (board_position[next_position] == w_bishop || board_position[next_position] == w_queen) return_list.push_back(next_position);
+					if (board[next_position] == w_bishop || board[next_position] == w_queen) return_list.push_back(next_position);
 					break;
 				}
 
@@ -1485,17 +787,17 @@ list<int> Game::list_of_king_attakers(int color_king)
 
 			while (is_position_in_board(next_position))
 			{
-				if (board_position[next_position] == empty)
+				if (board[next_position] == empty)
 				{
 					next_position = next_position + rook_addition[i];
 					continue;
 				}
 
-				if (is_black(board_position[next_position])) break;
+				if (is_black(board[next_position])) break;
 
-				if (is_white(board_position[next_position]))
+				if (is_white(board[next_position]))
 				{
-					if (board_position[next_position] == w_rook || board_position[next_position] == w_queen) return_list.push_back(next_position);
+					if (board[next_position] == w_rook || board[next_position] == w_queen) return_list.push_back(next_position);
 					break;
 				}
 
@@ -1508,32 +810,24 @@ list<int> Game::list_of_king_attakers(int color_king)
 	return return_list;
 }
 
-bool Game::is_position_in_board(int position)
-{
+bool Game::is_position_in_board(int position) const {
 	//check if first and second integer are in [1,..,8] 
 	if (((position <= 88) && (position >= 11)) && (((position % 10) >= 1) && ((position % 10) <= 8))) return true;
 	return false;
 }
 
-bool Game::is_black(int position)
-{
+bool Game::is_black(int position) const {
 	if (position >= 7 && position <= 12) return true;
-	if (position >= 1 && position <= 6) return false;
-	//else error_output(1); 
 	return false;
 }
 
-bool Game::is_white(int position)
-{
-	if (position >= 7 && position <= 12) return false;
+bool Game::is_white(int position) const {
 	if (position >= 1 && position <= 6) return true;
-	//else error_output(1);
 	return false;
 }
 
-list <int> Game::list_of_valid_moves(int position_now)
-{
-	list<int> return_list, empty_list;
+std::list<int> Game::list_of_valid_moves(int position_now) {
+	std::list<int> return_list, empty_list;
 	//Return empty list if position isn't in board
 	if (!(is_position_in_board(position_now)))
 	{
@@ -1541,7 +835,7 @@ list <int> Game::list_of_valid_moves(int position_now)
 		return return_list;
 	}
 	// Return empty list if board is empty
-	if (board_position[position_now] == empty) return return_list;
+	if (board[position_now] == empty) return return_list;
 
 
 	/*__________________________________________________________________________________________________________________________________
@@ -1557,7 +851,7 @@ list <int> Game::list_of_valid_moves(int position_now)
 
 	bool no_pieces_between_king_and_position_now = true;
 
-	if (is_white(board_position[position_now]) && !(board_position[position_now] == w_king))
+	if (is_white(board[position_now]) && !(board[position_now] == w_king))
 	{
 		position_king = find_king(w_king);
 
@@ -1586,7 +880,7 @@ list <int> Game::list_of_valid_moves(int position_now)
 			while (cursor != position_now)
 			{
 				bool temp = false;
-				if (board_position[cursor] == empty) temp = true;
+				if (board[cursor] == empty) temp = true;
 				no_pieces_between_king_and_position_now = no_pieces_between_king_and_position_now && temp;
 				cursor = cursor + addition;
 			}
@@ -1597,16 +891,16 @@ list <int> Game::list_of_valid_moves(int position_now)
 
 				while (is_position_in_board(cursor))
 				{
-					if (board_position[cursor] == empty)
+					if (board[cursor] == empty)
 					{
 						cursor = cursor + addition;
 						continue;
 					}
-					if (is_white(board_position[cursor])) break;
-					if (board_position[cursor] == b_queen || board_position[cursor] == b_rook)
+					if (is_white(board[cursor])) break;
+					if (board[cursor] == b_queen || board[cursor] == b_rook)
 					{
 						//Is my pined piece a rook or queen so it can defet the oposing rook or queen
-						if (board_position[position_now] == w_queen || board_position[position_now] == w_rook)
+						if (board[position_now] == w_queen || board[position_now] == w_rook)
 						{
 							return_list.push_back(cursor);
 							int i = position_king + addition;
@@ -1622,14 +916,14 @@ list <int> Game::list_of_valid_moves(int position_now)
 							}
 							return return_list;
 						}
-						else if (board_position[position_now] == w_pawn)
+						else if (board[position_now] == w_pawn)
 						{
 							if (addition == 10)
 							{
-								if (board_position[position_now + addition] == empty)
+								if (board[position_now + addition] == empty)
 								{
 									return_list.push_back(position_now + addition);
-									if (((position_now - (position_now % 10)) == 1) || board_position[position_now + addition + addition] == empty)
+									if (((position_now - (position_now % 10)) == 1) || board[position_now + addition + addition] == empty)
 										return_list.push_back(position_now + addition + addition);
 									break;
 								}
@@ -1678,7 +972,7 @@ list <int> Game::list_of_valid_moves(int position_now)
 			while (cursor != position_now)
 			{
 				bool temp = false;
-				if (board_position[cursor] == empty) temp = true;
+				if (board[cursor] == empty) temp = true;
 				no_pieces_between_king_and_position_now = no_pieces_between_king_and_position_now && temp;
 				cursor = cursor + addition;
 			}
@@ -1688,16 +982,16 @@ list <int> Game::list_of_valid_moves(int position_now)
 				cursor = position_now + addition;
 				while (is_position_in_board(cursor))
 				{
-					if (board_position[cursor] == empty)
+					if (board[cursor] == empty)
 					{
 						cursor = cursor + addition;
 						continue;
 					}
-					if (is_white(board_position[cursor])) break;
-					if (board_position[cursor] == b_queen || board_position[cursor] == b_bishop)
+					if (is_white(board[cursor])) break;
+					if (board[cursor] == b_queen || board[cursor] == b_bishop)
 					{
 						//Is my pined piece a rook or queen so it can defet the oposing rook or queen
-						if (board_position[position_now] == w_queen || board_position[position_now] == w_bishop)
+						if (board[position_now] == w_queen || board[position_now] == w_bishop)
 						{
 							return_list.push_back(cursor);
 							int i = position_king + addition;
@@ -1727,7 +1021,7 @@ list <int> Game::list_of_valid_moves(int position_now)
 
 	no_pieces_between_king_and_position_now = true;
 
-	if (is_black(board_position[position_now]) && !(board_position[position_now] == b_king))
+	if (is_black(board[position_now]) && !(board[position_now] == b_king))
 	{
 		position_king = find_king(b_king);
 
@@ -1756,7 +1050,7 @@ list <int> Game::list_of_valid_moves(int position_now)
 			while (cursor != position_now)
 			{
 				bool temp = false;
-				if (board_position[cursor] == empty) temp = true;
+				if (board[cursor] == empty) temp = true;
 				no_pieces_between_king_and_position_now = no_pieces_between_king_and_position_now && temp;
 				cursor = cursor + addition;
 			}
@@ -1767,16 +1061,16 @@ list <int> Game::list_of_valid_moves(int position_now)
 
 				while (is_position_in_board(cursor))
 				{
-					if (board_position[cursor] == empty)
+					if (board[cursor] == empty)
 					{
 						cursor = cursor + addition;
 						continue;
 					}
-					if (is_black(board_position[cursor])) break;
-					if (board_position[cursor] == w_queen || board_position[cursor] == w_rook)
+					if (is_black(board[cursor])) break;
+					if (board[cursor] == w_queen || board[cursor] == w_rook)
 					{
 						//Is my pined piece a rook or queen so it can defet the oposing rook or queen
-						if (board_position[position_now] == b_queen || board_position[position_now] == b_rook)
+						if (board[position_now] == b_queen || board[position_now] == b_rook)
 						{
 							return_list.push_back(cursor);
 							int i = position_king + addition;
@@ -1792,14 +1086,14 @@ list <int> Game::list_of_valid_moves(int position_now)
 							}
 							return return_list;
 						}
-						else if (board_position[position_now] == b_pawn)
+						else if (board[position_now] == b_pawn)
 						{
 							if (addition == -10)
 							{
-								if (board_position[position_now + addition] == empty)
+								if (board[position_now + addition] == empty)
 								{
 									return_list.push_back(position_now + addition);
-									if (((position_now - (position_now % 10)) == 7) || board_position[position_now + addition + addition] == empty)
+									if (((position_now - (position_now % 10)) == 7) || board[position_now + addition + addition] == empty)
 										return_list.push_back(position_now + addition + addition);
 									break;
 								}
@@ -1848,7 +1142,7 @@ list <int> Game::list_of_valid_moves(int position_now)
 			while (cursor != position_now)
 			{
 				bool temp = false;
-				if (board_position[cursor] == empty) temp = true;
+				if (board[cursor] == empty) temp = true;
 				no_pieces_between_king_and_position_now = no_pieces_between_king_and_position_now && temp;
 				cursor = cursor + addition;
 			}
@@ -1858,16 +1152,16 @@ list <int> Game::list_of_valid_moves(int position_now)
 				cursor = position_now + addition;
 				while (is_position_in_board(cursor))
 				{
-					if (board_position[cursor] == empty)
+					if (board[cursor] == empty)
 					{
 						cursor = cursor + addition;
 						continue;
 					}
-					if (is_black(board_position[cursor])) break;
-					if (board_position[cursor] == w_queen || board_position[cursor] == w_bishop)
+					if (is_black(board[cursor])) break;
+					if (board[cursor] == w_queen || board[cursor] == w_bishop)
 					{
 						//Is my pined piece a rook or queen so it can defet the oposing rook or queen
-						if (board_position[position_now] == b_queen || board_position[position_now] == b_bishop)
+						if (board[position_now] == b_queen || board[position_now] == b_bishop)
 						{
 							return_list.push_back(cursor);
 							int i = position_king + addition;
@@ -1900,8 +1194,8 @@ list <int> Game::list_of_valid_moves(int position_now)
 															case bis bishop & part Queen
 	  __________________________________________________________________________________________________________________________________
 	*/
-	if (board_position[position_now] == w_bishop || board_position[position_now] == b_bishop
-		|| board_position[position_now] == b_queen || board_position[position_now] == w_queen)
+	if (board[position_now] == w_bishop || board[position_now] == b_bishop
+		|| board[position_now] == b_queen || board[position_now] == w_queen)
 	{
 		int next_position;
 
@@ -1909,18 +1203,18 @@ list <int> Game::list_of_valid_moves(int position_now)
 		next_position = position_now + 11;
 		while (is_position_in_board(next_position) == true)
 		{
-			if (board_position[next_position] == empty) return_list.push_back(next_position);
+			if (board[next_position] == empty) return_list.push_back(next_position);
 			else
 			{
 				//What to do if a piece is in your way
-				if ((board_position[position_now] == w_bishop || board_position[position_now] == w_queen) && is_white(board_position[next_position])) break;
-				if ((board_position[position_now] == w_bishop || board_position[position_now] == w_queen) && is_black(board_position[next_position]))
+				if ((board[position_now] == w_bishop || board[position_now] == w_queen) && is_white(board[next_position])) break;
+				if ((board[position_now] == w_bishop || board[position_now] == w_queen) && is_black(board[next_position]))
 				{
 					return_list.push_back(next_position);
 					break;
 				}
-				if ((board_position[position_now] == b_bishop || board_position[position_now] == b_queen) && is_black(board_position[next_position])) break;
-				if ((board_position[position_now] == b_bishop || board_position[position_now] == b_queen) && is_black(board_position[next_position]))
+				if ((board[position_now] == b_bishop || board[position_now] == b_queen) && is_black(board[next_position])) break;
+				if ((board[position_now] == b_bishop || board[position_now] == b_queen) && is_black(board[next_position]))
 				{
 					return_list.push_back(next_position);
 					break;
@@ -1936,18 +1230,18 @@ list <int> Game::list_of_valid_moves(int position_now)
 
 		while (is_position_in_board(next_position) == true)
 		{
-			if (board_position[next_position] == empty) return_list.push_back(next_position);
+			if (board[next_position] == empty) return_list.push_back(next_position);
 			else
 			{
 				//What to do if a piece is in your way
-				if ((board_position[position_now] == w_bishop || board_position[position_now] == w_queen) && is_white(board_position[next_position])) break;
-				if ((board_position[position_now] == w_bishop || board_position[position_now] == w_queen) && is_black(board_position[next_position]))
+				if ((board[position_now] == w_bishop || board[position_now] == w_queen) && is_white(board[next_position])) break;
+				if ((board[position_now] == w_bishop || board[position_now] == w_queen) && is_black(board[next_position]))
 				{
 					return_list.push_back(next_position);
 					break;
 				}
-				if ((board_position[position_now] == b_bishop || board_position[position_now] == b_queen) && is_black(board_position[next_position])) break;
-				if ((board_position[position_now] == b_bishop || board_position[position_now] == b_queen) && is_black(board_position[next_position]))
+				if ((board[position_now] == b_bishop || board[position_now] == b_queen) && is_black(board[next_position])) break;
+				if ((board[position_now] == b_bishop || board[position_now] == b_queen) && is_black(board[next_position]))
 				{
 					return_list.push_back(next_position);
 					break;
@@ -1963,18 +1257,18 @@ list <int> Game::list_of_valid_moves(int position_now)
 
 		while (is_position_in_board(next_position) == true)
 		{
-			if (board_position[next_position] == empty) return_list.push_back(next_position);
+			if (board[next_position] == empty) return_list.push_back(next_position);
 			else
 			{
 				//What to do if a piece is in your way
-				if ((board_position[position_now] == w_bishop || board_position[position_now] == w_queen) && is_white(board_position[next_position])) break;
-				if ((board_position[position_now] == w_bishop || board_position[position_now] == w_queen) && is_black(board_position[next_position]))
+				if ((board[position_now] == w_bishop || board[position_now] == w_queen) && is_white(board[next_position])) break;
+				if ((board[position_now] == w_bishop || board[position_now] == w_queen) && is_black(board[next_position]))
 				{
 					return_list.push_back(next_position);
 					break;
 				}
-				if ((board_position[position_now] == b_bishop || board_position[position_now] == b_queen) && is_black(board_position[next_position])) break;
-				if ((board_position[position_now] == b_bishop || board_position[position_now] == b_queen) && is_black(board_position[next_position]))
+				if ((board[position_now] == b_bishop || board[position_now] == b_queen) && is_black(board[next_position])) break;
+				if ((board[position_now] == b_bishop || board[position_now] == b_queen) && is_black(board[next_position]))
 				{
 					return_list.push_back(next_position);
 					break;
@@ -1991,18 +1285,18 @@ list <int> Game::list_of_valid_moves(int position_now)
 
 		while (is_position_in_board(next_position) == true)
 		{
-			if (board_position[next_position] == empty) return_list.push_back(next_position);
+			if (board[next_position] == empty) return_list.push_back(next_position);
 			else
 			{
 				//What to do if a piece is in your way
-				if ((board_position[position_now] == w_bishop || board_position[position_now] == w_queen) && is_white(board_position[next_position])) break;
-				if ((board_position[position_now] == w_bishop || board_position[position_now] == w_queen) && is_black(board_position[next_position]))
+				if ((board[position_now] == w_bishop || board[position_now] == w_queen) && is_white(board[next_position])) break;
+				if ((board[position_now] == w_bishop || board[position_now] == w_queen) && is_black(board[next_position]))
 				{
 					return_list.push_back(next_position);
 					break;
 				}
-				if ((board_position[position_now] == b_bishop || board_position[position_now] == b_queen) && is_black(board_position[next_position])) break;
-				if ((board_position[position_now] == b_bishop || board_position[position_now] == b_queen) && is_black(board_position[next_position]))
+				if ((board[position_now] == b_bishop || board[position_now] == b_queen) && is_black(board[next_position])) break;
+				if ((board[position_now] == b_bishop || board[position_now] == b_queen) && is_black(board[next_position]))
 				{
 					return_list.push_back(next_position);
 					break;
@@ -2020,8 +1314,8 @@ list <int> Game::list_of_valid_moves(int position_now)
 	__________________________________________________________________________________________________________________________________
 	*/
 
-	if (board_position[position_now] == w_rook || board_position[position_now] == b_rook
-		|| board_position[position_now] == w_queen || board_position[position_now] == b_queen)
+	if (board[position_now] == w_rook || board[position_now] == b_rook
+		|| board[position_now] == w_queen || board[position_now] == b_queen)
 	{
 		int next_position;
 
@@ -2029,18 +1323,18 @@ list <int> Game::list_of_valid_moves(int position_now)
 		next_position = position_now + 10;
 		while (is_position_in_board(next_position) == true)
 		{
-			if (board_position[next_position] == empty) return_list.push_back(next_position);
+			if (board[next_position] == empty) return_list.push_back(next_position);
 			else
 			{
 				//What to do if a piece is in your way
-				if ((board_position[position_now] == w_rook || board_position[position_now] == w_queen) && is_white(board_position[next_position])) break;
-				if ((board_position[position_now] == w_rook || board_position[position_now] == w_queen) && is_black(board_position[next_position]))
+				if ((board[position_now] == w_rook || board[position_now] == w_queen) && is_white(board[next_position])) break;
+				if ((board[position_now] == w_rook || board[position_now] == w_queen) && is_black(board[next_position]))
 				{
 					return_list.push_back(next_position);
 					break;
 				}
-				if ((board_position[position_now] == b_rook || board_position[position_now] == b_queen) && is_black(board_position[next_position])) break;
-				if ((board_position[position_now] == b_rook || board_position[position_now] == b_queen) && is_white(board_position[next_position]))
+				if ((board[position_now] == b_rook || board[position_now] == b_queen) && is_black(board[next_position])) break;
+				if ((board[position_now] == b_rook || board[position_now] == b_queen) && is_white(board[next_position]))
 				{
 					return_list.push_back(next_position);
 					break;
@@ -2054,18 +1348,18 @@ list <int> Game::list_of_valid_moves(int position_now)
 		next_position = position_now - 10;
 		while (is_position_in_board(next_position) == true)
 		{
-			if (board_position[next_position] == empty) return_list.push_back(next_position);
+			if (board[next_position] == empty) return_list.push_back(next_position);
 			else
 			{
 				//What to do if a piece is in your way
-				if ((board_position[position_now] == w_rook || board_position[position_now] == w_queen) && is_white(board_position[next_position])) break;
-				if ((board_position[position_now] == w_rook || board_position[position_now] == w_queen) && is_black(board_position[next_position]))
+				if ((board[position_now] == w_rook || board[position_now] == w_queen) && is_white(board[next_position])) break;
+				if ((board[position_now] == w_rook || board[position_now] == w_queen) && is_black(board[next_position]))
 				{
 					return_list.push_back(next_position);
 					break;
 				}
-				if ((board_position[position_now] == b_rook || board_position[position_now] == b_queen) && is_black(board_position[next_position])) break;
-				if ((board_position[position_now] == b_rook || board_position[position_now] == b_queen) && is_white(board_position[next_position]))
+				if ((board[position_now] == b_rook || board[position_now] == b_queen) && is_black(board[next_position])) break;
+				if ((board[position_now] == b_rook || board[position_now] == b_queen) && is_white(board[next_position]))
 				{
 					return_list.push_back(next_position);
 					break;
@@ -2079,18 +1373,18 @@ list <int> Game::list_of_valid_moves(int position_now)
 		next_position = position_now - 1;
 		while (is_position_in_board(next_position) == true)
 		{
-			if (board_position[next_position] == empty) return_list.push_back(next_position);
+			if (board[next_position] == empty) return_list.push_back(next_position);
 			else
 			{
 				//What to do if a piece is in your way
-				if ((board_position[position_now] == w_rook || board_position[position_now] == w_queen) && is_white(board_position[next_position])) break;
-				if ((board_position[position_now] == w_rook || board_position[position_now] == w_queen) && is_black(board_position[next_position]))
+				if ((board[position_now] == w_rook || board[position_now] == w_queen) && is_white(board[next_position])) break;
+				if ((board[position_now] == w_rook || board[position_now] == w_queen) && is_black(board[next_position]))
 				{
 					return_list.push_back(next_position);
 					break;
 				}
-				if ((board_position[position_now] == b_rook || board_position[position_now] == b_queen) && is_black(board_position[next_position])) break;
-				if ((board_position[position_now] == b_rook || board_position[position_now] == b_queen) && is_white(board_position[next_position]))
+				if ((board[position_now] == b_rook || board[position_now] == b_queen) && is_black(board[next_position])) break;
+				if ((board[position_now] == b_rook || board[position_now] == b_queen) && is_white(board[next_position]))
 				{
 					return_list.push_back(next_position);
 					break;
@@ -2105,18 +1399,18 @@ list <int> Game::list_of_valid_moves(int position_now)
 		next_position = position_now + 1;
 		while (is_position_in_board(next_position) == true)
 		{
-			if (board_position[next_position] == empty) return_list.push_back(next_position);
+			if (board[next_position] == empty) return_list.push_back(next_position);
 			else
 			{
 				//What to do if a piece is in your way
-				if ((board_position[position_now] == w_rook || board_position[position_now] == w_queen) && is_white(board_position[next_position])) break;
-				if ((board_position[position_now] == w_rook || board_position[position_now] == w_queen) && is_black(board_position[next_position]))
+				if ((board[position_now] == w_rook || board[position_now] == w_queen) && is_white(board[next_position])) break;
+				if ((board[position_now] == w_rook || board[position_now] == w_queen) && is_black(board[next_position]))
 				{
 					return_list.push_back(next_position);
 					break;
 				}
-				if ((board_position[position_now] == b_rook || board_position[position_now] == b_queen) && is_black(board_position[next_position])) break;
-				if ((board_position[position_now] == b_rook || board_position[position_now] == b_queen) && is_white(board_position[next_position]))
+				if ((board[position_now] == b_rook || board[position_now] == b_queen) && is_black(board[next_position])) break;
+				if ((board[position_now] == b_rook || board[position_now] == b_queen) && is_white(board[next_position]))
 				{
 					return_list.push_back(next_position);
 					break;
@@ -2127,192 +1421,192 @@ list <int> Game::list_of_valid_moves(int position_now)
 		}
 	}
 
-		/*__________________________________________________________________________________________________________________________________
-																case Knight
-		__________________________________________________________________________________________________________________________________
-		*/
-		if (board_position[position_now] == w_knight || board_position[position_now] == b_knight)
+	/*__________________________________________________________________________________________________________________________________
+															case Knight
+	__________________________________________________________________________________________________________________________________
+	*/
+	if (board[position_now] == w_knight || board[position_now] == b_knight)
+	{
+
+
+		int knight_addition[8] = { 19, 21 ,12, -8, -19, -21, -12, 8 };
+
+		for (int i = 0; i < 8; i++)
 		{
 
 
-			int knight_addition[8] = { 19, 21 ,12, -8, -19, -21, -12, 8 };
-
-			for (int i = 0; i < 8; i++)
+			if (is_position_in_board(position_now + knight_addition[i]) == true)
 			{
 
+				if (board[position_now + knight_addition[i]] == empty)
+				{
+					return_list.push_back(position_now + knight_addition[i]);
+					continue;
+				}
 
-				if (is_position_in_board(position_now + knight_addition[i]) == true)
+				else if ((board[position_now] == w_knight && is_white(board[position_now + knight_addition[i]]))
+					|| (board[position_now] == b_knight && is_black(board[position_now + knight_addition[i]])))
 				{
 
-					if (board_position[position_now + knight_addition[i]] == empty)
-					{
-						return_list.push_back(position_now + knight_addition[i]);
-						continue;
-					}
+					continue;
+				}
+				else if ((board[position_now] == w_knight && is_black(board[position_now + knight_addition[i]]))
+					|| (board[position_now] == b_knight && is_white(board[position_now + knight_addition[i]])))
+				{
 
-					else if ((board_position[position_now] == w_knight && is_white(board_position[position_now + knight_addition[i]]))
-						|| (board_position[position_now] == b_knight && is_black(board_position[position_now + knight_addition[i]])))
-					{
-
-						continue;
-					}
-					else if ((board_position[position_now] == w_knight && is_black(board_position[position_now + knight_addition[i]]))
-						|| (board_position[position_now] == b_knight && is_white(board_position[position_now + knight_addition[i]])))
-					{
-
-						return_list.push_back(position_now + knight_addition[i]);
-						continue;
-					}
-
+					return_list.push_back(position_now + knight_addition[i]);
+					continue;
 				}
 
 			}
+
 		}
-
-		/*__________________________________________________________________________________________________________________________________
-														case white pawn
-		__________________________________________________________________________________________________________________________________
-		*/
-
-		if (board_position[position_now] == w_pawn)
-		{
-			if ((is_position_in_board(position_now + 10)) && (board_position[position_now + 10] == empty)) return_list.push_back(position_now + 10);
-			if ((is_position_in_board(position_now + 9)) && is_black((board_position[position_now + 9]))) return_list.push_back(position_now + 9);
-			if ((is_position_in_board(position_now + 11)) && is_black((board_position[position_now + 11]))) return_list.push_back(position_now + 11);
-		}
-
-
-
-		/*__________________________________________________________________________________________________________________________________
-													case black pawn
-		__________________________________________________________________________________________________________________________________
-		*/
-
-		if (board_position[position_now] == b_pawn)
-		{
-			if ((is_position_in_board(position_now - 10)) && (board_position[position_now - 10] == empty)) return_list.push_back(position_now - 10);
-			if ((is_position_in_board(position_now - 9)) && is_white((board_position[position_now - 9]))) return_list.push_back(position_now - 9);
-			if ((is_position_in_board(position_now - 11)) && is_white((board_position[position_now - 11]))) return_list.push_back(position_now - 11);
-		}
-
-
-
-		/*__________________________________________________________________________________________________________________________________
-													case king
-		__________________________________________________________________________________________________________________________________
-		*/
-
-		int temp_board[89];
-			for (int i = 0; i <= 88; i++)
-			{
-				temp_board[i] = board_position[i];
-			}
-			temp_board[position_now] = empty;
-
-			bool enemy_king_is_not_one_field_away = true;
-
-											//###### case white king #####
-
-		if (board_position[position_now] == w_king)
-		{
-			int king_addition[8] = { 9,10,11,1,-11,-10,-9,-1 };
-
-			for (int i = 0; i <= 7; i++)
-
-			{
-				enemy_king_is_not_one_field_away = true;
-				if ((board_position[position_now + king_addition[i]] == empty || is_black(board_position[position_now + king_addition[i]])) && (is_position_in_board(position_now + king_addition[i])))
-				{
-					for (int j = 0; j <= 7; j++)
-					{
-						if (is_position_in_board(position_now + king_addition[i] + king_addition[j]))
-							enemy_king_is_not_one_field_away = enemy_king_is_not_one_field_away && ((board_position[position_now + king_addition[i] + king_addition[j]]) != b_king);
-					}
-
-					if (enemy_king_is_not_one_field_away == true)
-					{
-						int temp_piece = temp_board[position_now + king_addition[i]];
-						temp_board[position_now + king_addition[i]] = w_king;
-						if (is_king_check(position_now + king_addition[i], &temp_board[0]) != true) return_list.push_back(position_now + king_addition[i]);
-						temp_board[position_now + king_addition[i]] = temp_piece;
-					}
-
-				}
-			}
-		}
-
-														//###### case black king ##### 
-		enemy_king_is_not_one_field_away = true;
-
-		if (board_position[position_now] == b_king)
-		{
-			int king_addition[8] = { 9,10,11,1,-11,-10,-9,-1 };
-
-			for (int i = 0; i <= 7; i++)
-
-			{
-				enemy_king_is_not_one_field_away = true;
-				if ((board_position[position_now + king_addition[i]] == empty || is_white(board_position[position_now + king_addition[i]])) 
-					&& (is_position_in_board(position_now + king_addition[i])))
-				{
-					for (int j = 0; j <= 7; j++)
-					{
-						if (is_position_in_board(position_now + king_addition[i] + king_addition[j]))
-							enemy_king_is_not_one_field_away = enemy_king_is_not_one_field_away 
-							&& ((board_position[position_now + king_addition[i] + king_addition[j]]) != w_king);
-					}
-
-					if (enemy_king_is_not_one_field_away == true)
-					{
-						int temp_piece = temp_board[position_now + king_addition[i]];
-						temp_board[position_now + king_addition[i]] = b_king;
-						if (is_king_check(position_now + king_addition[i], &temp_board[0]) != true) return_list.push_back(position_now + king_addition[i]);
-						temp_board[position_now + king_addition[i]] = temp_piece;
-					}
-
-				}
-			}
-		}
-
-
-		/*__________________________________________________________________________________________________________________________________
-												case king in check and move possibilitys for non king figures
-		__________________________________________________________________________________________________________________________________
-		*/
-
-
-		
-		//Case white piece
-		if (is_white(board_position[position_now]) && !(board_position[position_now] == w_king) && is_king_check(find_king(w_king)))
-		{
-			list <int> king_attaker_list = list_of_king_attakers(w_king);
-			if (king_attaker_list.size() == 1)
-			{
-				int temp = king_attaker_list.front();
-				//If attacking piec in list push.back
-				if (find(return_list.begin(), return_list.end(), temp) != return_list.end()) empty_list.push_back(temp);
-				return empty_list;
-
-			}
-			else return empty_list;
-		}
-
-		//Case black piece
-		if (is_black(board_position[position_now]) && !(board_position[position_now] == b_king) && is_king_check(find_king(b_king)))
-	   {
-			list <int> king_attaker_list = list_of_king_attakers(b_king);
-			if (king_attaker_list.size() == 1)
-			{
-				int temp = king_attaker_list.front();
-				//If attacking piec in list push.back
-				if (find(return_list.begin(), return_list.end(), temp) != return_list.end()) empty_list.push_back(temp);
-				return empty_list;
-
-			}
-			else return empty_list;
-		}
-		return return_list;
 	}
+
+	/*__________________________________________________________________________________________________________________________________
+													case white pawn
+	__________________________________________________________________________________________________________________________________
+	*/
+
+	if (board[position_now] == w_pawn)
+	{
+		if ((is_position_in_board(position_now + 10)) && (board[position_now + 10] == empty)) return_list.push_back(position_now + 10);
+		if ((is_position_in_board(position_now + 9)) && is_black((board[position_now + 9]))) return_list.push_back(position_now + 9);
+		if ((is_position_in_board(position_now + 11)) && is_black((board[position_now + 11]))) return_list.push_back(position_now + 11);
+	}
+
+
+
+	/*__________________________________________________________________________________________________________________________________
+												case black pawn
+	__________________________________________________________________________________________________________________________________
+	*/
+
+	if (board[position_now] == b_pawn)
+	{
+		if ((is_position_in_board(position_now - 10)) && (board[position_now - 10] == empty)) return_list.push_back(position_now - 10);
+		if ((is_position_in_board(position_now - 9)) && is_white((board[position_now - 9]))) return_list.push_back(position_now - 9);
+		if ((is_position_in_board(position_now - 11)) && is_white((board[position_now - 11]))) return_list.push_back(position_now - 11);
+	}
+
+
+
+	/*__________________________________________________________________________________________________________________________________
+												case king
+	__________________________________________________________________________________________________________________________________
+	*/
+
+	Board temp_board;
+	for (int i = 0; i <= 88; i++)
+	{
+		temp_board[i] = board[i];
+	}
+	temp_board[position_now] = empty;
+
+	bool enemy_king_is_not_one_field_away = true;
+
+										//###### case white king #####
+
+	if (board[position_now] == w_king)
+	{
+		int king_addition[8] = { 9,10,11,1,-11,-10,-9,-1 };
+
+		for (int i = 0; i <= 7; i++)
+
+		{
+			enemy_king_is_not_one_field_away = true;
+			if ((board[position_now + king_addition[i]] == empty || is_black(board[position_now + king_addition[i]])) && (is_position_in_board(position_now + king_addition[i])))
+			{
+				for (int j = 0; j <= 7; j++)
+				{
+					if (is_position_in_board(position_now + king_addition[i] + king_addition[j]))
+						enemy_king_is_not_one_field_away = enemy_king_is_not_one_field_away && ((board[position_now + king_addition[i] + king_addition[j]]) != b_king);
+				}
+
+				if (enemy_king_is_not_one_field_away == true)
+				{
+					int temp_piece = temp_board[position_now + king_addition[i]];
+					temp_board[position_now + king_addition[i]] = w_king;
+					if (is_king(position_now + king_addition[i], temp_board) != true) return_list.push_back(position_now + king_addition[i]);
+					temp_board[position_now + king_addition[i]] = temp_piece;
+				}
+
+			}
+		}
+	}
+
+													//###### case black king ##### 
+	enemy_king_is_not_one_field_away = true;
+
+	if (board[position_now] == b_king)
+	{
+		int king_addition[8] = { 9,10,11,1,-11,-10,-9,-1 };
+
+		for (int i = 0; i <= 7; i++)
+
+		{
+			enemy_king_is_not_one_field_away = true;
+			if ((board[position_now + king_addition[i]] == empty || is_white(board[position_now + king_addition[i]])) 
+				&& (is_position_in_board(position_now + king_addition[i])))
+			{
+				for (int j = 0; j <= 7; j++)
+				{
+					if (is_position_in_board(position_now + king_addition[i] + king_addition[j]))
+						enemy_king_is_not_one_field_away = enemy_king_is_not_one_field_away 
+						&& ((board[position_now + king_addition[i] + king_addition[j]]) != w_king);
+				}
+
+				if (enemy_king_is_not_one_field_away == true)
+				{
+					int temp_piece = temp_board[position_now + king_addition[i]];
+					temp_board[position_now + king_addition[i]] = b_king;
+					if (is_king(position_now + king_addition[i], temp_board) != true) return_list.push_back(position_now + king_addition[i]);
+					temp_board[position_now + king_addition[i]] = temp_piece;
+				}
+
+			}
+		}
+	}
+
+
+	/*__________________________________________________________________________________________________________________________________
+											case king in check and move possibilitys for non king figures
+	__________________________________________________________________________________________________________________________________
+	*/
+
+
+	
+	//Case white piece
+	if (is_white(board[position_now]) && !(board[position_now] == w_king) && is_king(find_king(w_king)))
+	{
+		std::list<int> king_attaker_list = list_of_king_attakers(w_king);
+		if (king_attaker_list.size() == 1)
+		{
+			int temp = king_attaker_list.front();
+			//If attacking piec in list push.back
+			if (find(return_list.begin(), return_list.end(), temp) != return_list.end()) empty_list.push_back(temp);
+			return empty_list;
+
+		}
+		else return empty_list;
+	}
+
+	//Case black piece
+	if (is_black(board[position_now]) && !(board[position_now] == b_king) && is_king(find_king(b_king)))
+	{
+		std::list<int> king_attaker_list = list_of_king_attakers(b_king);
+		if (king_attaker_list.size() == 1)
+		{
+			int temp = king_attaker_list.front();
+			//If attacking piec in list push.back
+			if (find(return_list.begin(), return_list.end(), temp) != return_list.end()) empty_list.push_back(temp);
+			return empty_list;
+
+		}
+		else return empty_list;
+	}
+	return return_list;
+}
 
 	
 

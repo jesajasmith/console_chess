@@ -1,6 +1,8 @@
 ﻿#include <iostream>
 #include "Game.h"
 #include <list>
+#include<stdio.h>
+#include<windows.h>
 
 #define NUM_GAMES 50
 #define min_board 1
@@ -8,13 +10,14 @@
 
 using namespace std;
 
-int hi;
+std::string hi;
 
 int main() {
-	
 
-	Game newgame;
+	Game game;
 
+	game.visualise();
+    cin >> hi;
 	/*list<int> listvalidmoves;
 	listvalidmoves.push_front(11);
 	listvalidmoves.push_front(88);
@@ -22,11 +25,11 @@ int main() {
 	listvalidmoves.push_front(13);
 	listvalidmoves.push_front(45);
 
-	newgame.visualise();
-	newgame.visualisemoves(listvalidmoves);
+	game.visualise();
+	game.visualisemoves(listvalidmoves);
 
 
-	int numtest = newgame.quersum(13);
+	int numtest = game.quersum(13);
 	cout << numtest;
 	*/
 
@@ -37,12 +40,12 @@ int main() {
 	for (int i = 11; i <= 88; i++)
 	{
 		temp_list = zerro_list;
-		if (newgame.is_position_in_board(i)) 
+		if (game.is_position_in_board(i)) 
 		{
 
 			for (int j = 11; j <= 88; j++)
 			{
-				if (newgame.is_position_in_board(j))
+				if (game.is_position_in_board(j))
 				{
 					int x_square = ((i % 10) - (j % 10)) * ((i % 10) - (j % 10)) * 100;
 					int y_square = (((i - (i % 10)) - (j - (j % 10))) * ((i - (i % 10)) - (j - (j % 10))));
@@ -52,7 +55,7 @@ int main() {
 				}
 			}
 
-			newgame.visualisemoves(temp_list);
+			game.visualisemoves(temp_list);
 			cout << "Position " << i << " has " << temp_list.size() << " size \n" << endl;
 
 		}
@@ -62,8 +65,8 @@ int main() {
 
 	*/
 
-	newgame.visualisemoves(newgame.list_of_valid_moves(44));
-	//newgame.visualisemoves(newgame.list_of_king_attakers(12));
+	game.visualisemoves(game.list_of_valid_moves(12));
+	//game.visualisemoves(game.list_of_king_attakers(12));
 
 	cin >> hi;
 
