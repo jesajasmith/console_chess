@@ -13,7 +13,7 @@ list<int> BaseChessAI::mymoves(int fieldtemp[89], int colortemp)
 {
 	for (size_t i = 10; i <= 88; i++)
 	{
-		board_position[i] = fieldtemp[i];
+		board[i] = fieldtemp[i];
 	}
  
 	list<int> listmoves;
@@ -55,7 +55,7 @@ void BaseChessAI::sethardboard(int fieldtemp[89])
 {
 	for (size_t i = 10; i <= 88; i++)
 	{
-		board_position[i] = fieldtemp[i];
+		board[i] = fieldtemp[i];
 	}
 }
 
@@ -160,7 +160,7 @@ list<int> BaseChessAI::enemymoves(int fieldtemp[89], int colortemp)
 {
 	for (size_t i = 10; i <= 88; i++)
 	{
-		board_position[i] = fieldtemp[i];
+		board[i] = fieldtemp[i];
 	}
 
 	list<int> listmoves;
@@ -191,7 +191,7 @@ list<int> BaseChessAI::enemyattackedfields(int fieldtemp[89], int colortemp)
 
 	for (size_t i = 10; i <= 88; i++)
 	{
-		board_position[i] = fieldtemp[i];
+		board[i] = fieldtemp[i];
 	}
 
 	list<int> listmoves;

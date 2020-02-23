@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string>
 #include <windows.h>  
-#include <list> 
+#include <list>
 #include <algorithm>
 #include <iterator>
 
