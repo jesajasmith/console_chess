@@ -45,8 +45,6 @@ public:
 	bool attacked_by_knight (int const& position,Board const& temp_bord) const;
 	bool attacked_by_pawn (int const& position,Board const& temp_bord) const;
 
-	std::string board_pos_to_string(short board);
-
 	//Leo is the best
 	//Theme one standart
 	int colorbonw = 112;
@@ -66,7 +64,7 @@ public:
 private:
 	std::array<int,4> const straight_moves{{-10,-1,1,10}};
 	std::array<int,4> const diagonal_moves{{-11,-9,9,11}};
-	std::array<int,8> const queen_moves{{-11,-9,9,11,-10,-1,1,10,}};
+	std::array<int,8> const queen_moves{{-11, -9, 9, 11, -10, -1, 1, 10 }};
 	std::array<int,8> const knight_moves{{ 19, 21 ,12, -8, -19, -21, -12, 8 }};
 };
 

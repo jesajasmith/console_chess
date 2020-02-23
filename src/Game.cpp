@@ -15,7 +15,6 @@ void Game::set_colour_theme( int const theme) {
 		colorwonw = 127;
 		colorwonb = 111;
 		colorleg = 15;
-
  	} else if (theme == 1) {//Theme 1 Grey and Beige
 		colorbonw = 112;
 		colorbonb = 96;
@@ -38,9 +37,7 @@ void Game::set_colour_theme( int const theme) {
 }
 
 void Game::initialise_board() {
-	for (auto & field : board) {
-		field = 0;
-	}
+	for (auto & field : board) { field = 0; }
 
 	board[11] = w_rook;
 	board[12] = w_knight;
@@ -51,9 +48,7 @@ void Game::initialise_board() {
 	board[17] = w_knight;
 	board[18] = w_rook;
 
-	for (int i = 21; i <= 28; i++) {
-		board[i] = w_pawn;
-	}
+	for (int i = 21; i <= 28; i++) { board[i] = w_pawn; }
 
 	board[81] = b_rook;
 	board[82] = b_knight;
@@ -64,51 +59,28 @@ void Game::initialise_board() {
 	board[87] = b_knight; 
 	board[88] = b_rook;
 
-	for (int i = 71; i <= 78; i++) {
-		board[i] = b_pawn;
-	}
-}
-
-std::string Game::board_pos_to_string(short board_pos) {
-	switch (board_pos) {
-	case w_pawn: return "P";
-	case w_bishop: return "B";
-	case w_knight: return "K";
-	case w_rook: return "R";
-	case w_queen: return "Q";
-	case w_king: return "+";
-
-	case b_pawn: return "P";
-	case b_bishop: return "B";
-	case b_knight: return "K";
-	case b_rook: return "R";
-	case b_queen: return "Q";
-	case b_king: return "+";
-
-	case no_piece: return " ";
-	default: std::cout << "Error in board_pos_to_string() function!" << std::endl;
-	}
-
-	return "Error in board_pos_to_string() function!";
-
+	for (int i = 71; i <= 78; i++) { board[i] = b_pawn; }
 }
 
 std::string Game::inttochar(int const inttemp) const {
 	switch (inttemp) {
-	case 1: return "P";
-	case 2: return "K";
-	case 3: return "B";
-	case 4: return "R";
-	case 5: return "Q";
-	case 6: return "+";
-	case 7: return "P";
-	case 8: return "K";
-	case 9: return "B";
-	case 10: return "R";
-	case 11: return "Q";
-	case 12: return "+";
+		case w_pawn: return "P";
+		case w_bishop: return "B";
+		case w_knight: return "K";
+		case w_rook: return "R";
+		case w_queen: return "Q";
+		case w_king: return "+";
 
-	default: return " ";
+		case b_pawn: return "P";
+		case b_bishop: return "B";
+		case b_knight: return "K";
+		case b_rook: return "R";
+		case b_queen: return "Q";
+		case b_king: return "+";
+
+		case no_piece: return " ";
+
+		default: return "@";
 	}
 }
 
@@ -117,81 +89,51 @@ void Game::set_console_color(int const color) {
 }
 
 void Game::visualise() {
-	std::cout << "Chess Board!\n";
-	set_console_color(colorleg);
-	std::cout << "\n   A  B  C  D  E  F  G  H  "<< std::endl;
-	for(int i = 1;i<9;i++) {
-		set_console_color(colorleg);
-		std::cout << i<<" ";
-		for (size_t i1 = 10*i+1; i1 <= 10*i+8; i1++) {
-			int colortemp;
-			if ( (i1+i+1) % 2 ) {
-				if (board[i1] <= 6) { colortemp = colorwonw; }
-				else { colortemp = colorbonw; }
-			}
-			else
-			{
-				if (board[i1] <= 6) { colortemp = colorwonb; }
-				else { colortemp = colorbonb; }
-			}
-
-			set_console_color(colortemp);
-			std::cout << " " << inttochar(board[i1]) << " ";
-		}
-		
-		set_console_color(colorleg);
-		std::cout << " " << i << std::endl;
-	}
-	
-	std::cout << "   A  B  C  D  E  F  G  H  " << std::endl << std::endl;
+  std::list<int> listvalidmoves{};
+	visualisemoves(listvalidmoves);
 }
 
 void Game::visualisemoves(std::list<int> listvalidmoves) {
 	std::cout << "Chess Board!\n";
 	set_console_color(colorleg);
 	std::cout << "\n   A  B  C  D  E  F  G  H  " << std::endl;
-	for(auto row = 1; row<9; row++) {
+	for(auto row = 1; row < 9; row++) {
 		set_console_color(colorleg);
 		std::cout << row << " ";
-		for (auto column = 10*row+1; column <= 10*row+8; column++) {
-			int colortemp;
-			if ( (column+row+1) % 2 ) {
-				if (board[column] <= 6) { 
-					colortemp = colorwonw; 
-				} else { 
-					colortemp = colorbonw; 
-				}
-			} else {
-				if (board[column] <= 6) { 
-					colortemp = colorwonb; 
-				} else { 
-					colortemp = colorbonb; 
-				}
-			}
+		for (auto position = 10*row+1; position <= 10*row+8; position++) {
 
-
-			set_console_color(colortemp);
-			if ((std::find(listvalidmoves.begin(), listvalidmoves.end(), column) != listvalidmoves.end())) {
-				int colormarker = 64;
-				if (board[column] <= 6) {
-					colormarker = 79;
-					if (quersum(column) % 2) {
-						colormarker = 79;
+			int square_color = 64;
+			if ((std::find(listvalidmoves.begin(), listvalidmoves.end(), position) != listvalidmoves.end())) {
+				if ( is_white(board[position]) ) {
+					if ( quersum(position) % 2 ) {
+						square_color = 79;
 					} else {
-						colormarker = 207;
+						square_color = 207;
 					}
 				} else {
-					colormarker = 64;
-					if (quersum(column) % 2) {
-						colormarker = 64;
+					if ( quersum(position) % 2 ) {
+						square_color = 64;
 					} else {
-						colormarker = 192;
+						square_color = 192;
 					}
 				}
-				set_console_color(colormarker);
+			} else {
+				if ( is_white(board[position]) ) {
+					if ( quersum(position) % 2 ) {
+						square_color = colorwonw;
+					} else {
+						square_color = colorwonb;
+					}
+				} else {
+					if ( quersum(position) % 2 ) {
+						square_color = colorbonw;
+					} else {
+						square_color = colorbonb;
+					}
+				}
 			}
-			
-			std::cout << " " << inttochar(board[column]) << " ";
+			set_console_color(square_color);
+			std::cout << " " << inttochar(board[position]) << " ";
 		}
 		set_console_color(colorleg);
 		std::cout << " " << row << std::endl;
@@ -217,21 +159,21 @@ int Game::playmove(int movefrom, int moveto, int valid) {
 	std::string killchartemp = " ";
 	std::string killtypetemp = "";
 
-		if (board[moveto] != 0) {
-			killtemp = board[moveto];
-			killchartemp = inttochar(killtemp);
-			killconftemp = 1;
-		}
+	if (board[moveto] != 0) {
+		killtemp = board[moveto];
+		killchartemp = inttochar(killtemp);
+		killconftemp = 1;
+	}
 
-		if (killtemp <= 6) {
-			killtypetemp = "white";
-		}
-		else {
-			killtypetemp = "black";
-		}
+	if (killtemp <= 6) {
+		killtypetemp = "white";
+	}
+	else {
+		killtypetemp = "black";
+	}
 
 
-    board[moveto] = board[movefrom];
+	board[moveto] = board[movefrom];
 	board[movefrom] = 0;
 	
 
