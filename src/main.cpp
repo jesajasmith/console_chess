@@ -1,8 +1,6 @@
 ﻿#include <iostream>
 #include "Game.h"
 #include <list>
-#include<stdio.h>
-#include<windows.h>
 
 #define NUM_GAMES 50
 #define min_board 1
@@ -18,6 +16,7 @@ int main() {
 
 	game.visualise();
     cin >> hi;
+
 	/*list<int> listvalidmoves;
 	listvalidmoves.push_front(11);
 	listvalidmoves.push_front(88);
@@ -40,12 +39,12 @@ int main() {
 	for (int i = 11; i <= 88; i++)
 	{
 		temp_list = zerro_list;
-		if (game.is_position_in_board(i)) 
+		if (game.is_on_board(i)) 
 		{
 
 			for (int j = 11; j <= 88; j++)
 			{
-				if (game.is_position_in_board(j))
+				if (game.is_on_board(j))
 				{
 					int x_square = ((i % 10) - (j % 10)) * ((i % 10) - (j % 10)) * 100;
 					int y_square = (((i - (i % 10)) - (j - (j % 10))) * ((i - (i % 10)) - (j - (j % 10))));
